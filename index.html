@@ -102,8 +102,8 @@
     //do greetings
     var mainGreet = document.getElementById("main-greeting");
     var subGreet = document.getElementById("sub-greeting");
-    mainGreet.textContent = "Hello, welcome to Let It Rain";
-    subGreet.textContent = "Turn on your speaker, and gently press the space-bar to continue.";
+    mainGreet.textContent = "Turn on your speaker";
+    subGreet.textContent = "And gently press the space-bar or tap your phone to continue.";
 
     //function for screen change
     var greetingsDiv = document.getElementById("greetings");
@@ -165,23 +165,23 @@
     }
 
     var currentScene = 0;
-    //generrate scene change when user hits spacebar
-    document.addEventListener('keydown', function (event) {
+    //generrate scene change when user hits spacebar or tap their screen
+
+    var eventHandler = function eventHandler() {
       //change scene when user hits spacebar
-      if (event.keyCode === 32) {
         if(currentScene === 3){
-        changeScreen("Ready to go?", "Take a deep breath, and press the spacebar for one last time.");
+        changeScreen("Ready to go?", "Take a deep breath, and press that spacebar (or tap your screen) for one last time.");
         currentScene++;
         } else if(currentScene === 2){
         changeScreen("In this room, you are free to express your thoughts", "and watch it turn into droplets of rain");
         currentScene++;
       } else if(currentScene === 1){
-        changeScreen("but hey, you got this", "keep pressing the spacebar to continue");
+        changeScreen("The world can get really crazy sometimes", "but, hey, you got this!");
         currentScene++;
       } else if(currentScene === 0){
         //play music
         playCalm();
-        changeScreen("The world can get really crazy sometimes", "again, gently press the space-bar to continue");
+        changeScreen("Hello, welcome to Let It Rain", "again, gently squeeze the space-bar or tap your screen to continue");
         currentScene++;
       } else{
         removeText();
@@ -190,7 +190,12 @@
       }, 500);
       }
     }
+    document.addEventListener('keydown', function(event){
+      if (event.keyCode === 32) {
+        eventHandler();
+      }
     });
+    document.addEventListener('touchstart', eventHandler);
 
     /*if user goes to the vent room without watching the greeting
      (which means calm song has not played yet), 
