@@ -35,6 +35,11 @@
     li a:hover {
       background-color: white;
     }
+    #update-log{
+      background-color: #DFDFDF;
+      font-size: 0.8rem;
+      padding: 10px;
+    }
 
     #container {
       height: 90%;
@@ -93,6 +98,7 @@
       <p id="sub-greeting" class="greetings"></p>
     </div>
   </div>
+  <div id="update-log">Last Updated: 4 January 2020</div>
   <script>
     //function to load stuffs
     function load(id, source) {
@@ -196,7 +202,7 @@
       }
     });
     document.addEventListener('touchstart', function(event){
-      if(event.touches[0].clientY>47){
+      if(event.touches[0].clientY > 47){
         eventHandler();
       }
     });
