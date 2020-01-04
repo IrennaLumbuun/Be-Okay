@@ -2,6 +2,10 @@
 <html>
 
 <head>
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+<link rel="manifest" href="favicon_io/site.webmanifest">
   <title>Let It Rain</title>
   <meta charset="utf-8">
   <style>
@@ -182,11 +186,11 @@
         changeScreen("In this room, you are free to express your thoughts", "and watch it turn into droplets of rain");
         currentScene++;
       } else if(currentScene === 1){
+        //play music
+        playCalm();
         changeScreen("The world can get really crazy sometimes", "but, hey, you got this!");
         currentScene++;
       } else if(currentScene === 0){
-        //play music
-        playCalm();
         changeScreen("Hello, welcome to Let It Rain", "again, gently squeeze the space-bar or tap your screen to continue");
         currentScene++;
       } else{
