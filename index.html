@@ -195,7 +195,11 @@
         eventHandler();
       }
     });
-    document.addEventListener('touchstart', eventHandler);
+    document.addEventListener('touchstart', function(event){
+      if(event.touches[0].clientY>47){
+        eventHandler();
+      }
+    });
 
     /*if user goes to the vent room without watching the greeting
      (which means calm song has not played yet), 
