@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Let It Rain</title>
+  <meta charset="utf-8">
+  <style>
+    html,
+    body {
+      height: 100%;
+      font-family:Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #DFDFDF;
+      width: 100%;
+    }
+
+    li {
+      float: right;
+    }
+
+    li a {
+      display: block;
+      color: black;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      background-color: white;
+    }
+
+    #container {
+      height: 90%;
+      background-image: url('./stardust.png');
+      background-color: #1f242e;
+    }
+
+    #vent-room,
+    #about,
+    #hotline {
+      height: 100%;
+      width: 100%;
+    }
+
+    #greetings {
+      width: 60%;
+      margin: 0 0 0 0;
+      position: absolute;
+      top: 40%;
+      left: 20%;
+      padding: 1.5% 1.5% 1.5% 1.5%;
+      text-align: center;
+      background-color: rgba(1, 1, 1, 0.2);
+      color: white;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+
+    #main-greeting,
+    #sub-greeting {
+      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+
+    #main-greeting {
+      font-size: 1.5em;
+      font-weight: 600;
+    }
+
+    #sub-greeting {
+      font-weight: lighter;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="nav">
+    <ul>
+      <li><a href="#" onclick="load('hotline', 'hotline.html')">Suicide Hotline</a></li>
+      <li><a href="#" onclick="load('about', 'about.html')">About </a></li>
+      <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')"> Let It Rain</a></li>
+    </ul>
+  </div>
+  <div id="container">
+    <div id="greetings">
+      <p id="main-greeting" class="greetings"></p>
+      <p id="sub-greeting" class="greetings"></p>
+    </div>
+  </div>
+  <script>
+    //function to load stuffs
+    function load(id, source) {
+      document.getElementById("container").innerHTML = '<object id =' + id + ' type="text/html" data=' + source + ' ></object>';
+    }
+
+    //do greetings
+    var mainGreet = document.getElementById("main-greeting");
+    var subGreet = document.getElementById("sub-greeting");
+    mainGreet.textContent = "Hello, welcome to Let It Rain";
+    subGreet.textContent = "(gently press the space-bar to continue)";
+
+    //function for screen change
+    var greetingsDiv = document.getElementById("greetings");
+
+    var removeText = function removeText(){
+      //current main and sub greeting dissolves.
+      var opacityEl = 1;
+      var timer = setInterval(function () {
+        opacityEl -= 0.02;
+        document.getElementById("main-greeting").style.opacity = opacityEl;
+        document.getElementById("sub-greeting").style.opacity = opacityEl;
+        if (opacityEl <= 0) {
+          clearInterval(timer);
+          greetingsDiv.removeChild(document.getElementById("main-greeting"));
+          greetingsDiv.removeChild(document.getElementById("sub-greeting"));
+        }
+      }, 10);
+    }
+    var changeScreen = function changeScreen(main, sub) {
+      removeText();
+      //create new main and sub Greeting
+      setTimeout(function () {
+        var mainGreet = document.createElement("p");
+        mainGreet.id = "main-greeting";
+        mainGreet.className = "greetings";
+        var subGreet = document.createElement("p");
+        subGreet.id = "sub-greeting";
+        subGreet.className = "greetings";
+        mainGreet.textContent = main;
+        subGreet.textContent = sub;
+        mainGreet.style.opacity = 0;
+        subGreet.style.opacity = 0;
+        //append to div greeting
+        greetingsDiv.appendChild(mainGreet);
+        greetingsDiv.appendChild(subGreet);
+
+        //animate
+        opacityEl = 0;
+        var timer = setInterval(function () {
+          opacityEl += 0.05;
+          mainGreet.style.opacity = opacityEl;
+          subGreet.style.opacity = opacityEl;
+          if (opacityEl >= 1) {
+            clearInterval(timer);
+            mainGreet.style.opacity = 1;
+            subGreet.style.opacity = 1;
+          }
+        }, 10);
+      }, 500);
+
+    }
+    //function to play calm music
+    function playCalm(){
+      var music = new Audio();
+        music.src = "./calm.mp3";
+        music.loop = true;
+        music.volume = 0.3;
+        music.play();
+    }
+
+    var currentScene = 0;
+    //generrate scene change when user hits spacebar
+    document.addEventListener('keydown', function (event) {
+      //change scene when user hits spacebar
+      if (event.keyCode === 32) {
+        if(currentScene === 3){
+        changeScreen("Ready to go?", "Take a deep breath, and press the spacebar for one last time.");
+        currentScene++;
+        } else if(currentScene === 2){
+        changeScreen("In this room, you are free to express your thoughts", "and watch it turn into droplets of rain");
+        currentScene++;
+      } else if(currentScene === 1){
+        changeScreen("but hey, you got this", "keep pressing the spacebar to continue");
+        currentScene++;
+      } else if(currentScene === 0){
+        //play music
+        playCalm();
+        changeScreen("The world can get really crazy sometimes", "again, gently press the space-bar to continue");
+        currentScene++;
+      } else{
+        removeText();
+        setTimeout(function() {
+      document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
+      }, 500);
+      }
+    }
+    });
+
+    /*if user goes to the vent room without watching the greeting
+     (which means calm song has not played yet), 
+     play it regardless
+    */
+
+    document.getElementById('vent').addEventListener('click', function(){
+      if(currentScene === 0){
+        playCalm();
+      }
+    });
+  </script>
+
+</body>
+
+</html>

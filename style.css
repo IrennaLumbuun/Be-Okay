@@ -1,0 +1,143 @@
+﻿ :root {
+      --bgColor: #1f242e;
+      --inputColor: white;
+      --outlineColor: white;
+    }
+
+    html {
+      font-size: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: monospace;
+      height: 100%;
+      -webkit-animation-name: bgChange;
+      -webkit-animation-duration: 300s;
+      animation-fill-mode: forwards;
+      display: inline;
+
+    }
+
+    .rain {
+      width: 0.5px;
+      height: 70px;
+      display: inline-grid;
+      position: relative;
+      animation-name: rain;
+      background-color: lightgray;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      visibility: hidden;
+      animation-play-state: play;
+    }
+
+    @keyframes rain {
+      0% {
+        top: 0%;
+        opacity: 50%
+      }
+      50% {
+        top: 30%;
+        opacity: 20%
+      }
+      100% {
+        top: 100%;
+        opacity: 0%
+      }
+    }
+
+    @keyframes bgChange {
+      0% {
+        background-color: #1f242e;
+      }
+      /*blue*/
+      25% {
+        background-color: #404A5F;
+      }
+      /*blue*/
+      35% {
+        background-color: #405F5F;
+      }
+      /*blue-green*/
+      60% {
+        background-color: #B3B378;
+      }
+      /*yellow-ish*/
+      70% {
+        background-color: #B39278;
+      }
+      /* dark sand*/
+      80% {
+        background-color: #C8BC84;
+      }
+      /* dirty soft yellow*/
+      100% {
+        background-color: #B37878;
+      }
+      /*really nice pink */
+    }
+
+    label {
+      text-align: center;
+      display: block;
+      font-size: 20px;
+      color: var(--inputColor);
+      margin: 0.9rem;
+    }
+
+    input {
+      font-family: monospace;
+      font-size: 1.5rem;
+      color: var(--inputColor);
+      left: 12.5%;
+      width: 75%;
+      padding: 0.75rem 0.75rem 0.75rem 0.75rem;
+      border: 2px dashed white;
+      background-color: rgba(255, 255, 255, 0.1);
+      position: absolute;
+    }
+
+    input:focus {
+      outline-color: white;
+    }
+
+    #thought-area {
+      top: 20%;
+      /*background-color: gray;*/
+      height: 90px;
+    }
+
+    #playground {
+      width: 100%;
+      /*background-color:black;*/
+      height: 60%;
+    }
+
+    #padding {
+      height: 20%
+    }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #595959;
+  width:100%;
+}
+
+li {
+    float: right;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
