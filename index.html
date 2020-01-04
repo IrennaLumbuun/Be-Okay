@@ -112,8 +112,8 @@
     //do greetings
     var mainGreet = document.getElementById("main-greeting");
     var subGreet = document.getElementById("sub-greeting");
-    mainGreet.textContent = "Turn on your speaker";
-    subGreet.textContent = "And gently press the space-bar or tap your phone to continue.";
+    mainGreet.textContent = "Hello, welcome to Let It Rain";
+    subGreet.textContent = "(gently press the space-bar or tap your phone to continue.)";
 
     //function for screen change
     var greetingsDiv = document.getElementById("greetings");
@@ -191,7 +191,7 @@
         changeScreen("The world can get really crazy sometimes", "but, hey, you got this!");
         currentScene++;
       } else if(currentScene === 0){
-        changeScreen("Hello, welcome to Let It Rain", "again, gently squeeze the space-bar or tap your screen to continue");
+        changeScreen("Turn on your speaker for full experience", "again, gently squeeze the space-bar or tap your screen to continue");
         currentScene++;
       } else{
         removeText();
