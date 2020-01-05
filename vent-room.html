@@ -40,7 +40,7 @@
         @keyframes rain {
             0% {
                 top:0%;
-                opacity: 50%;
+                opacity: 80%;
             }
 
             50% {
@@ -219,7 +219,7 @@
                     droplet.className = "rain";
                     droplet.style.left = 0 + xPos + "%";
                     droplet.style.visibility = "visible";
-                    droplet.style.animationDuration = Math.random() * 100 / 1000 + 0.4 + "s";
+                    droplet.style.animationDuration = Math.random() * 100 / 1000 + 0.6 + "s";
                     droplet.style.animationDelay = Math.random() * 0.1 + "s";
                     playground.appendChild(droplet);
                 }
