@@ -102,7 +102,7 @@
       <p id="sub-greeting" class="greetings"></p>
     </div>
   </div>
-  <div id="update-log">Last Updated: 4 January 2020</div>
+  <div id="update-log">Last Updated: 10 January 2020</div>
   <script>
     //function to load stuffs
     function load(id, source) {
@@ -113,7 +113,7 @@
     var mainGreet = document.getElementById("main-greeting");
     var subGreet = document.getElementById("sub-greeting");
     mainGreet.textContent = "Hello, welcome to Be Okay";
-    subGreet.textContent = "(gently tap your phone to continue.)";
+    subGreet.textContent = "(gently tap your screen to continue.)";
 
     //function for screen change
     var greetingsDiv = document.getElementById("greetings");
@@ -170,44 +170,48 @@
       var music = new Audio();
         music.src = "./calm.mp3";
         music.loop = true;
-        music.volume = 0.3;
+        music.volume = 0.6;
         music.play();
     }
 
     var currentScene = 0;
-    //generrate scene change when user hits spacebar or tap their screen
+    //generrate scene change when users tap their screen
+
+/* words*/
+var words = new Array(7);
+for(var i = 0; i < words.length; i++){
+  words[i] = new Array(2);
+}
+words[0] = ["Turn on your speaker for full experience", "again, tap on your screen to continue"];
+words[1] = ["The world can get really crazy sometimes", "it's normal to feel overwhelmed"];
+words[2] = ["try to take a break from time to time", "relax your shoulder, take a deep breath, smile"];
+words[3] = ["Here, I tell you what; ", "you are going to be okay"];
+words[4] = ["In a few second, you'll be entering the calm room", "it's a safe place to vent"];
+words[5] = ["In this room, you are free to write what's on your mind", "and watch it disappears into droplets of rain"];
+words[6] = ["There's no one to judge", "I promise"];
+words[7] = ["Ready to go?", "Take a deep breath, and tap the screen for one last time."];
+
+
 
     var eventHandler = function eventHandler() {
-      //change scene when user hits spacebar
-        if(currentScene === 3){
-        changeScreen("Ready to go?", "Take a deep breath, and tap the screen for one last time.");
-        currentScene++;
-        } else if(currentScene === 2){
-        changeScreen("In this room, you are free to express your thoughts", "and watch it turn into droplets of rain");
-        currentScene++;
-      } else if(currentScene === 1){
-        //play music
-        playCalm();
-        changeScreen("The world can get really crazy sometimes", "but, hey, you got this!");
-        currentScene++;
-      } else if(currentScene === 0){
-        changeScreen("Turn on your speaker for full experience", "again, gently tap your screen to continue");
-        currentScene++;
-      } else{
+      //change scene when user tap screen
+      if(currentScene > 7){
         removeText();
         setTimeout(function() {
-      document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
-      }, 500);
+        document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
+        }, 500);
+      } else if(currentScene == 1){
+        changeScreen(words[currentScene][0], words[currentScene][1]);
+        playCalm();
+      } else{
+        changeScreen(words[currentScene][0], words[currentScene][1]);
       }
     }
+
     document.addEventListener('click', function(event){
       if (event.clientY > 47) {
         eventHandler();
-      }
-    });
-    document.addEventListener('touchstart', function(event){
-      if(event.touches[0].clientY > 47){
-        eventHandler();
+        currentScene++;
       }
     });
 
