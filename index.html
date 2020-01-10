@@ -113,7 +113,7 @@
     var mainGreet = document.getElementById("main-greeting");
     var subGreet = document.getElementById("sub-greeting");
     mainGreet.textContent = "Hello, welcome to Be Okay";
-    subGreet.textContent = "(gently press the space-bar or tap your phone to continue.)";
+    subGreet.textContent = "(gently tap your phone to continue.)";
 
     //function for screen change
     var greetingsDiv = document.getElementById("greetings");
@@ -180,7 +180,7 @@
     var eventHandler = function eventHandler() {
       //change scene when user hits spacebar
         if(currentScene === 3){
-        changeScreen("Ready to go?", "Take a deep breath, and press that spacebar (or tap your screen) for one last time.");
+        changeScreen("Ready to go?", "Take a deep breath, and tap the screen for one last time.");
         currentScene++;
         } else if(currentScene === 2){
         changeScreen("In this room, you are free to express your thoughts", "and watch it turn into droplets of rain");
@@ -191,7 +191,7 @@
         changeScreen("The world can get really crazy sometimes", "but, hey, you got this!");
         currentScene++;
       } else if(currentScene === 0){
-        changeScreen("Turn on your speaker for full experience", "again, gently squeeze the space-bar or tap your screen to continue");
+        changeScreen("Turn on your speaker for full experience", "again, gently tap your screen to continue");
         currentScene++;
       } else{
         removeText();
@@ -200,8 +200,8 @@
       }, 500);
       }
     }
-    document.addEventListener('keydown', function(event){
-      if (event.keyCode === 32) {
+    document.addEventListener('click', function(event){
+      if (event.clientY > 47) {
         eventHandler();
       }
     });
