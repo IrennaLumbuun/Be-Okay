@@ -26,7 +26,7 @@
 
         .rain {
             width: 0.5px;
-            height: 70px;
+            height: 60px;
             display: inline-grid;
             position: absolute;
             animation-name: rain;
@@ -108,8 +108,8 @@
             font-family: monospace;
             font-size: 1.5rem;
             color: var(--inputColor);
-            left: 12.5%;
-            width: 75%;
+            left: 17.5%;
+            width: 65%;
             padding: 0.75rem 0.75rem 0.75rem 0.75rem;
             border: 2px dashed white;
             background-color: rgba(255, 255, 255, 0.1);
@@ -206,22 +206,22 @@
         */
         var maxDrops =0
         var maxDropsCount = function maxDropsCount(){
-           maxDrops = Math.floor(0.75 * window.innerWidth / 3); //so we dont have too much waterdrops
+           maxDrops = Math.floor(0.65 * window.innerWidth / 3); //divide by 3 so we dont have too much waterdrops
         }
         maxDropsCount();
         var rain = function rain() {
-            var randomize = Math.random() * 0.1
+            var randomize = Math.random() * 0.1;
             if (totalDrops > maxDrops) {
                 numDroplets = maxDrops - totalDrops;
             } else {
                 for (var i = 0; i < numDroplets; i++) {
-                    var xPos = (Math.random() * 72) + 13.5;
+                    var xPos = (Math.random() * 62) + 18.5;
                     var droplet = document.createElement("div");
                     droplet.className = "rain";
                     droplet.style.left = 0 + xPos + "%";
                     droplet.style.visibility = "visible";
-                    droplet.style.animationDuration = Math.random() * 100 / 1000 + 0.6 + "s";
-                    droplet.style.animationDelay = Math.random() * 0.1 + "s";
+                    droplet.style.animationDuration = Math.random() * 100 / 1000 + 0.5 + randomize + "s";
+                    droplet.style.animationDelay = Math.random() * 0.1 + 0.2 * randomize + "s";
                     playground.appendChild(droplet);
                 }
             }
