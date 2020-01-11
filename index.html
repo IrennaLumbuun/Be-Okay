@@ -93,7 +93,7 @@
     <ul>
       <li><a href="#" onclick="load('hotline', 'hotline.html')">Suicide Hotline</a></li>
       <li><a href="#" onclick="load('about', 'about.html')">About </a></li>
-      <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')"> Be Okay</a></li>
+      <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')">Be Okay</a></li>
     </ul>
   </div>
   <div id="container">
@@ -178,22 +178,23 @@
     //generrate scene change when users tap their screen
 
 /* words*/
-var words = new Array(7);
+var words = new Array(8);
 for(var i = 0; i < words.length; i++){
   words[i] = new Array(2);
 }
 words[0] = ["Turn on your speaker for full experience", "again, tap on your screen to continue"];
-words[1] = ["The world can get really crazy sometimes", "it is perfectly normal to feel tired."];
-words[2] = ["Hey, try to take a break from time to time", "relax your shoulder, take a deep breath"];
+words[1] = ["The world can get really crazy sometimes", "it is perfectly normal to feel overwhelmed."];
+words[2] = ["But hey, try to take a break from time to time", "Relax your shoulder; you've been too tense all day."];
 words[3] = ["I tell you what; ", "everything is going to be okay"];
-words[4] = ["In a few second, you'll be entering the calm room", "it's a safe place to vent"];
-words[5] = ["In this room, you are free to write what's on your mind", "and watch it disappears into droplets of rain"];
-words[6] = ["There's no one to judge", "I promise"];
-words[7] = ["Ready to go?", "Take a deep breath, and tap the screen for one last time."];
+words[4] = ["I know, it might not feel that way,", "but you are stronger than you think."]
+words[5] = ["In a few second, you'll enter The Be Okay Room", "it's a safe place to vent"];
+words[6] = ["There, you are free to write what's on your mind", "and watch it disappears into droplets of rain"];
+words[7] = ["No one who can judge you. You're safe.", "I promise."];
+words[8] = ["Ready to go?", "Take a deep breath, and tap the screen for one last time."];
 
     var eventHandler = function eventHandler() {
       //change scene when user tap screen
-      if(currentScene > 7){
+      if(currentScene > 8){
         removeText();
         setTimeout(function() {
         document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
