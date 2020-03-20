@@ -1,231 +1,234 @@
-<!DOCTYPE html>
 <html>
+    <head>
+        <title>Irenna Lumbuun</title>
+        <style>
+        body{
+            width:100%;
+            margin:unset;
 
-<head>
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
-<link rel="manifest" href="favicon_io/site.webmanifest">
-  <title>Be Okay</title>
-  <meta charset="utf-8">
-  <style>
-    html,
-    body {
-      height: 100%;
-      font-family:Verdana, Geneva, Tahoma, sans-serif;
-    }
-
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #DFDFDF;
-      width: 100%;
-    }
-
-    li {
-      float: right;
-    }
-
-    li a {
-      display: block;
-      color: black;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-    }
-
-    li a:hover {
-      background-color: white;
-    }
-    #update-log{
-      background-color: #DFDFDF;
-      font-size: 0.8rem;
-      padding: 10px;
-    }
-
-    #container {
-      height: 90%;
-      background-image: url('./stardust.png');
-      background-color: #1f242e;
-    }
-
-    #vent-room,
-    #about,
-    #hotline {
-      height: 100%;
-      width: 100%;
-    }
-
-    #greetings {
-      width: 60%;
-      margin: 0 0 0 0;
-      position: absolute;
-      top: 40%;
-      left: 20%;
-      padding: 1.5% 1.5% 1.5% 1.5%;
-      text-align: center;
-      background-color: rgba(1, 1, 1, 0.2);
-      color: white;
-      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    }
-
-    #main-greeting,
-    #sub-greeting {
-      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    }
-
-    #main-greeting {
-      font-size: 1.5em;
-      font-weight: 600;
-    }
-
-    #sub-greeting {
-      font-weight: lighter;
-      opacity: 0.8;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="nav">
-    <ul>
-      <li><a href="#" onclick="load('hotline', 'hotline.html')">Suicide Hotline</a></li>
-      <li><a href="#" onclick="load('about', 'about.html')">About </a></li>
-      <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')">Be Okay</a></li>
-    </ul>
-  </div>
-  <div id="container">
-    <div id="greetings">
-      <p id="main-greeting" class="greetings"></p>
-      <p id="sub-greeting" class="greetings"></p>
-    </div>
-  </div>
-  <div id="update-log">Last Updated: 9 March 2020</div>
-  <script>
-    //function to load stuffs
-    function load(id, source) {
-      document.getElementById("container").innerHTML = '<object id =' + id + ' type="text/html" data=' + source + ' ></object>';
-    }
-
-    //do greetings
-    var mainGreet = document.getElementById("main-greeting");
-    var subGreet = document.getElementById("sub-greeting");
-    mainGreet.textContent = "Hello, welcome to Be Okay";
-    subGreet.textContent = "(gently tap your screen to continue.)";
-
-    //function for screen change
-    var greetingsDiv = document.getElementById("greetings");
-
-    var removeText = function removeText(){
-      //current main and sub greeting dissolves.
-      var opacityEl = 1;
-      var timer = setInterval(function () {
-        opacityEl -= 0.02;
-        document.getElementById("main-greeting").style.opacity = opacityEl;
-        document.getElementById("sub-greeting").style.opacity = opacityEl;
-        if (opacityEl <= 0) {
-          clearInterval(timer);
-          greetingsDiv.removeChild(document.getElementById("main-greeting"));
-          greetingsDiv.removeChild(document.getElementById("sub-greeting"));
         }
-      }, 10);
-    }
-    var changeScreen = function changeScreen(main, sub) {
-      removeText();
-      //create new main and sub Greeting
-      setTimeout(function () {
-        var mainGreet = document.createElement("p");
-        mainGreet.id = "main-greeting";
-        mainGreet.className = "greetings";
-        var subGreet = document.createElement("p");
-        subGreet.id = "sub-greeting";
-        subGreet.className = "greetings";
-        mainGreet.textContent = main;
-        subGreet.textContent = sub;
-        mainGreet.style.opacity = 0;
-        subGreet.style.opacity = 0;
-        //append to div greeting
-        greetingsDiv.appendChild(mainGreet);
-        greetingsDiv.appendChild(subGreet);
+        #container {
+          background-image: url('./home-bg.png');
+          height: -webkit-fill-available;
+        }
 
-        //animate
-        opacityEl = 0;
-        var timer = setInterval(function () {
-          opacityEl += 0.05;
-          mainGreet.style.opacity = opacityEl;
-          subGreet.style.opacity = opacityEl;
-          if (opacityEl >= 1) {
-            clearInterval(timer);
-            mainGreet.style.opacity = 1;
-            subGreet.style.opacity = 1;
-          }
-        }, 10);
-      }, 500);
+        #nav{
+            width: 100%;
+            position: fixed;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width:100%;
+        }
 
-    }
-    //function to play calm music
-    function playCalm(){
-      var music = new Audio();
-        music.src = "./calm.mp3";
-        music.loop = true;
-        music.volume = 0.6;
-        music.play();
-    }
+        li {
+            float: right;
+            margin-right: 5px;
+        }
 
-    var currentScene = 0;
-    //generrate scene change when users tap their screen
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
 
-/* words*/
-var words = new Array(8);
-for(var i = 0; i < words.length; i++){
-  words[i] = new Array(2);
-}
-words[0] = ["Turn on your speaker for full experience", "again, tap on your screen to continue"];
-words[1] = ["The world can get crazy sometimes", "it is okay to feel overwhelmed."];
-words[2] = ["But hey, try to take a break from time to time", "Relax your shoulder; you've been too tense all day."];
-words[3] = ["I tell you what; ", "everything is going to be okay"];
-words[4] = ["I know, it might not feel that way,", "but you are stronger than you think."]
-words[5] = ["In a few second, you'll enter Be Okay", "it's a safe place to vent"];
-words[6] = ["There, you are free to write what's on your mind", "and watch it disappears into droplets of rain"];
-words[7] = ["No one is going to judge you. You're safe.", "I promise."];
-words[8] = ["Ready to go?", "Take a deep breath, and tap the screen for one last time."];
+        li a:hover {
+            border-bottom: 2px solid #85B3D1;
+        }
+        /*.urheight{
+        section-height:100px;
+        }
+        .image-height{
+        min-height:100%;
+        min-width:1024px;
+        }
+        */
 
-    var eventHandler = function eventHandler() {
-      //change scene when user tap screen
-      if(currentScene > 8){
-        removeText();
-        setTimeout(function() {
-        document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
-        }, 500);
-      } else if(currentScene == 1){
-        changeScreen(words[currentScene][0], words[currentScene][1]);
-        playCalm();
-      } else{
-        changeScreen(words[currentScene][0], words[currentScene][1]);
-      }
-    }
+        /*font{
+        position: absolute; 
+        top: 120%;
+        left: 10%;
+        }
+        font span{
+        background:#D9E9FF;
+        letter-spacing:1px;
+        }
 
-    document.addEventListener('click', function(event){
-      if (event.clientY > 47) {
-        eventHandler();
-        currentScene++;
-      }
-    });
+        .img-me{
+        position: absolute; 
+        top: 120%; 
+        left: 60%;
+        border-color: gray;
+            border-width: 10px;
+            border-style: solid;
+            border-radius: 50%;
+        width:200px;
+        background:#D9E9FF;
+        }
+        p{
+        position:absolute;
+        top: 130%;
+        left: 10%;
+        width:700px;
+        line-spacing:1.5pt;
+        }
 
-    /*if user goes to the vent room without watching the greeting
-     (which means calm song has not played yet), 
-     play it regardless
-    */
+        p span{
+        background: #b3e6ff;
+        font: 18px Helvetica;
+        }
 
-    document.getElementById('vent').addEventListener('click', function(){
-      if(currentScene === 0){
-        playCalm();
-      }
-    });
-  </script>
+        h3{
+        position:absolute;
+        top:220%;
+        left:35%;
+        color: black; 
+        }
+        h3 span { 
+        font: bold 70px Helvetica, Sans-Serif; 
+        letter-spacing: -1px;  
+        padding: 10px;}
 
-</body>
+        .target{
+        position:absolute;
+        top:240%;
+        left: 30%;
+        }
+        .mywork{
+        position:absolute;
+        width:420px;
+        height:300px;
+        top:250%;
+            left:5%;
+        background:#808080;
+        }
 
+        .mywork2{
+        position:absolute;
+        width:420px;
+        height:300px;
+        top:250%;
+            left:55%;
+        background:#808080;
+        }
+        h4{
+        position:absolute;
+        top: 320%; 
+        left: 10%; 
+        width: 100%; 
+        }
+        h4 span { 
+        color: white; 
+        font: bold 50px Arial; 
+        letter-spacing: -1px;  
+        background: rgb(0, 0, 0); 
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;}
+
+        .button1{
+        color:white;
+        position:absolute;
+        top: 375%; 
+        left: 55%; 
+        width: 30%;
+        height: 15%;
+        background:#009;
+        }
+        .button2{
+        position:absolute;
+        top: 395%; 
+        left: 55%; 
+        width: 30%;
+        height: 15%;
+        background:#4db8ff;
+        }
+        .button3{
+        position:absolute;
+        top: 355%; 
+        left: 55%; 
+        width: 30%;
+        height: 15%;
+        background:#030;
+        
+        }*/
+        #home,
+        #project,
+        #about {
+          height: -webkit-fill-available;
+          width: 100%;
+        }
+        </style>
+    </head>
+    <body>
+      <div id="nav">
+           <ul>
+               <li><a href="#" onclick="load('about', 'about.html')">Beyond Coding</a></li>
+             <li><a href="#" onclick="load('project', 'project.html')">Projects</a></li>
+              <li><a href="#" onclick="load('home', 'home.html')">Home</a>
+           </ul>
+      </div>
+      
+      <div id="container"></div>
+      
+      <!-- Now this is the portfolio
+      <div id="page2">
+        <a  name="portfolio"></a>
+          <section id="portfolio" class="urheight">
+        <a id="portfolio" class="smooth"></a>
+          <img src="https://pixabay.com/static/uploads/photo/2016/03/15/02/07/floor-1256763_960_720.jpg" class="image-height" width="100%">
+        <h3><span>My Work</span></h3>
+            <div class="row">
+              <div class="cols-m-8"
+            <a href=""><button type="button" target"_blank" class="mywork"><image src="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a ultricies neque. Nulla aliquam libero sit amet libero tincidunt eleifend. Duis consectetur eros luctus, blandit neque in, commodo nisl. Etiam vitae arcu a lorem semper imperdiet ut nec nisl. Etiam vitae aliquet lorem, eu semper metus. Duis sed tincidunt metus. Integer sollicitudin arcu vel odio fringilla, nec fermentum enim pretium. Nulla ultricies faucibus nisi at sollicitudin. Etiam eu mauris gravida, finibus urna nec, eleifend odio. Aliquam pretium convallis est, vel tincidunt enim ultricies in. Aenean ut dolor quis odio vestibulum blandit ac nec mi. Aliquam convallis aliquet metus, sed congue nunc accumsan ut. Aenean non lacinia elit. Aliquam egestas ac eros id aliquam
+              </div>
+              <div class="cols-m-8"
+            <a href=""><button type="button" target"_blank" class="mywork2"><image src="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a ultricies neque. Nulla aliquam libero sit amet libero tincidunt eleifend. Duis consectetur eros luctus, blandit neque in, commodo nisl. Etiam vitae arcu a lorem semper imperdiet ut nec nisl. Etiam vitae aliquet lorem, eu semper metus. Duis sed tincidunt metus. Integer sollicitudin arcu vel odio fringilla, nec fermentum enim pretium. Nulla ultricies faucibus nisi at sollicitudin. Etiam eu mauris gravida, finibus urna nec, eleifend odio. Aliquam pretium convallis est, vel tincidunt enim ultricies in. Aenean ut dolor quis odio vestibulum blandit ac nec mi. Aliquam convallis aliquet metus, sed congue nunc accumsan ut. Aenean non lacinia elit. Aliquam egestas ac eros id aliquam
+              </div>
+              </div>
+              </button></a>
+            </div>
+        -->
+      <!--Below is the "About Content"
+      <div class="container">
+        <div id="page1" class="onpg1">
+        <a id="about" class="smooth urheight"></a>
+         <img src="https://pixabay.com/static/uploads/photo/2013/11/05/19/12/urban-205986_960_720.jpg" class="image-height" width="100%">
+        <font size="2em"><span>About Me</span></font>
+        <p align="justifiy"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a ultricies neque. Nulla aliquam libero sit amet libero tincidunt eleifend. Duis consectetur eros luctus, blandit neque in, commodo nisl. Etiam vitae arcu a lorem semper imperdiet ut nec nisl. Etiam vitae aliquet lorem, eu semper metus. Duis sed tincidunt metus. Integer sollicitudin arcu vel odio fringilla, nec fermentum enim pretium. Nulla ultricies faucibus nisi at sollicitudin. Etiam eu mauris gravida, finibus urna nec, eleifend odio. Aliquam pretium convallis est, vel tincidunt enim ultricies in. Aenean ut dolor quis odio vestibulum blandit ac nec mi. Aliquam convallis aliquet metus, sed congue nunc accumsan ut. Aenean non lacinia elit. Aliquam egestas ac eros id aliquam.
+          </span></p>
+      </div>
+        </div>-->
+      <!--contact content
+      <div id="page3">
+        <a id="contact" class="smooth"></a>
+          <img src="https://pixabay.com/static/uploads/photo/2015/05/16/12/03/escalator-769790_960_720.jpg" class="image-height" width="100%">
+        <h4><span>Let's stay in touch</span></h4>
+        <div>
+        <button type="button" class="btn-default btn-block btn-primary button1"><a href="https://facebook.com">facebook</a></button> 
+              <button type="button" class="btn btn-default button2"><a href="twitter.com">twitter</a></button>
+        <button type="button" class="btn btn-default button3"><a href="freecodecamp.com/Irennanicole">Free code camp</a></button>
+            </div></div>
+      </div>-->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script>/*
+      $('.smooth').on('click', function() {
+          $.smoothScroll({
+              scrollElement: $('body'),
+              scrollTarget: '#' + this.id
+          });
+          
+          return false;
+      });*/
+      //function to load stuffs
+      function load(id, source){
+        document.getElementById("container").innerHTML = '<object id =' + id + ' type="text/html" data=' + source + ' ></object>';
+        } 
+       window.onload=load('home', './home.html');
+      </script>
+    </body>
 </html>
