@@ -1,0 +1,290 @@
+<html>
+
+<head>
+    <style>
+        :root {
+            --bgColor: #1f242e;
+            --inputColor: white;
+            --outlineColor: white;
+        }
+
+        html {
+            font-size: 100%;
+            height: 100%;
+        }
+
+        body {
+            background-image: url("./stardust.png");
+            font-family: 'Courier New', Courier, monospace;
+            ;
+            height: 100%;
+            -webkit-animation-name: bgChange;
+            -webkit-animation-duration: 300s;
+            animation-fill-mode: forwards;
+            display: inline;
+        }
+
+        .rain {
+            width: 0.5px;
+            height: 65px;
+            display: inline-grid;
+            position: absolute;
+            animation-name: rain;
+            background-color: #afc3cc;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            visibility: hidden;
+            animation-play-state: play;
+        }
+
+        @keyframes rain {
+            0% {
+                top:0%;
+                opacity: 65%;
+            }
+
+            50% {
+                top: 50%;
+                opacity: 25%;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0%;
+            }
+        }
+
+        @keyframes bgChange {
+            0% {
+                background-color: #1f242e;
+            }
+
+            /*blue*/
+            15% {
+                background-color: #222f48;
+            }
+
+            25% {
+                background-color: #424d62;
+            }
+
+            /*blue*/
+            35% {
+                background-color: #405F5F;
+            }
+
+            /*blue-green*/
+            60% {
+                background-color: #B3B378;
+            }
+
+            /*yellow-ish*/
+            70% {
+                background-color: #B39278;
+            }
+
+            /* dark sand*/
+            80% {
+                background-color: #C8BC84;
+            }
+
+            /* dirty soft yellow*/
+            100% {
+                background-color: #B37878;
+            }
+
+            /*really nice pink */
+        }
+
+        label {
+            text-align: center;
+            display: block;
+            font-size: 20px;
+            color: var(--inputColor);
+            margin: 0.9rem;
+        }
+
+        input {
+            font-family: monospace;
+            font-size: 1.5rem;
+            color: var(--inputColor);
+            left: 17.5%;
+            width: 65%;
+            padding: 0.75rem 0.75rem 0.75rem 0.75rem;
+            border: 2px dashed white;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+        }
+
+        input:focus {
+            outline-color: white;
+        }
+
+        #thought-area {
+            height: 90px;
+        }
+
+        #playground {
+            width: 100%;
+            height: 60%;
+            position:relative;
+        }
+
+        #padding {
+            height: 12%
+        }
+        .clouds{
+            opacity: 0.7;
+            position:fixed;
+        }
+        #cloud1{
+            left: -75px;
+            top: 35%;
+        }   
+        
+        #cloud2{
+            top: 50%;
+            left: 75%;
+        }   
+        
+         </style>
+</head>
+
+<body>
+    <div id="cloud-area">
+        <img src="cloud1.png" class="clouds" id="cloud1">
+        <img src="cloud1.png" class="clouds" id='cloud2'>
+        <div id="padding"></div>
+        <div id="thought-area">
+            <label for="prompt">What's on your mind?</label>
+            <input type="text" id="thought-box" autocomplete="off"><br><br>
+        </div>
+        <div id="playground">
+            <div class="rain"></div>
+        </div>
+    </div>
+    <script>
+        //declare variables
+        var playground = document.getElementById("playground");
+        var numKeyPressed = 0;
+        var numDroplets = 0; //one letter equals one droplets.
+        var totalDrops = 0;
+        /*this function is called when user pressed enter or when the input box reaches its max length. The words will fade and turn into rain */
+        var getNewBox = function getNewBox() {
+            //calculate numDroplets
+            numDroplets = numKeyPressed - 1; //enter key count as 1
+            totalDrops += numDroplets;
+            /*get value of the input box after user type some stuffs */
+            var inputEl = document.getElementById("thought-box");
+            //new input box
+            var newInputEl = document.createElement("input");
+            newInputEl.id = "thought-box";
+            var thoughtAreaDiv = document.getElementById("thought-area");
+            thoughtAreaDiv.insertBefore(newInputEl, thoughtAreaDiv.childNodes[4]); //4 is the location of the element after inputEl
+            //words fade out
+            var opacityNew = 0;
+            var opacityOld = 1;
+            var timer = setInterval(function () {
+                opacityNew += 0.02;
+                opacityOld -= 0.02;
+                newInputEl.style.opacity = opacityNew;
+                inputEl.style.opacity = opacityOld;
+                if (opacityNew >= 1) {
+                    clearInterval(timer);
+                    thoughtAreaDiv.removeChild(thoughtAreaDiv.childNodes[3]);
+                }
+            }, 15);
+            setTimeout(function () {
+                thoughtAreaDiv.childNodes[4].focus();
+            }, 0);
+            rain();
+            //set numKeyPressed back to 0 so it doesn't mess up the next calculation
+            numKeyPressed = 0;
+        };
+        /*
+        This method generrates the rain
+        */
+        var maxDrops =0
+        var maxDropsCount = function maxDropsCount(){
+           maxDrops = Math.floor(0.65 * window.innerWidth / 3); //divide by 3 so we dont have too much waterdrops
+        }
+        maxDropsCount();
+        var rain = function rain() {
+            var randomize = Math.random() * 0.1;
+            if (totalDrops > maxDrops) {
+                numDroplets = maxDrops - totalDrops;
+            } else {
+                for (var i = 0; i < numDroplets; i++) {
+                    var xPos = (Math.random() * 62) + 18.5;
+                    var droplet = document.createElement("div");
+                    droplet.className = "rain";
+                    droplet.style.left = 0 + xPos + "%";
+                    droplet.style.visibility = "visible";
+                    droplet.style.animationDuration = Math.random() * 100 / 1000 + 0.5 + randomize + "s";
+                    droplet.style.animationDelay = Math.random() * 0.1 + 0.2 * randomize + "s";
+                    playground.appendChild(droplet);
+                }
+            }
+        };
+        /*
+        this method calculates the maximum number of strokes in an inputbox
+        */
+        var maxStroke;
+        var maxStrokeCount = function maxStrokeCount() {
+            maxStroke = Math.floor(window.innerWidth / 16);
+        };
+        /*audios
+        1. " Life & Death" by Michael Giacchino
+            2. "Rain Water Dripping Softly" by florianreichelt from https://freesound.org
+            3. "Rain and birds.mp3" by peacemeditation from https://freesound.org
+    
+            */
+        class Music {
+            constructor(source, volume) {
+                this.source = source;
+                this.volume = volume;
+                this.isPlaying = false;
+            }
+            play() {
+                var music = new Audio();
+                music.src = this.source;
+                music.loop = true;
+                music.volume = this.volume;
+                this.isPlaying = true;
+                music.play();
+            }
+        }
+        var rain1 = new Music("./rain.mp3", 0.99);
+        var rain2 = new Music("./rain.mp3", 0.75);
+        var rain3 = new Music("./hardRain.mp3", 0.8);
+        /*this is where the main event happen. 
+        */
+        maxStrokeCount();
+        window.onresize = maxStrokeCount; // also recalculate when user resize their window
+        window.onresize = maxDropsCount();
+        document.addEventListener("keydown", function (event) {
+            numKeyPressed++;
+            if (event.keyCode === 13 || numKeyPressed === maxStroke) {
+                getNewBox();
+            } else if (totalDrops >= maxDrops) {
+                if (!rain3.isPlaying) {
+                    rain3.play();
+                }
+            }
+            else if (totalDrops >= maxDrops / 2) {
+                if (!rain2.isPlaying) {
+                    rain2.play(); //double the sound so it has an echoing effect
+                    console.log(rain2);
+                }
+            }
+            else if (totalDrops >= maxDrops / 4) {
+                if (!rain1.isPlaying) {
+                    rain1.play();
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

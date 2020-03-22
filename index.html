@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+<link rel="manifest" href="favicon_io/site.webmanifest">
+  <title>Be Okay</title>
+  <meta charset="utf-8">
+  <style>
+    html,
+    body {
+      height: 100%;
+      font-family:Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #DFDFDF;
+      width: 100%;
+    }
+
+    li {
+      float: right;
+    }
+
+    li a {
+      display: block;
+      color: black;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      background-color: white;
+    }
+    #update-log{
+      background-color: #DFDFDF;
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+
+    #container {
+      height: 90%;
+      background-image: url('./stardust.png');
+      background-color: #1f242e;
+    }
+
+    #vent-room,
+    #about,
+    #hotline {
+      height: 100%;
+      width: 100%;
+    }
+
+    #greetings {
+      width: 60%;
+      margin: 0 0 0 0;
+      position: absolute;
+      top: 40%;
+      left: 20%;
+      padding: 1.5% 1.5% 1.5% 1.5%;
+      text-align: center;
+      background-color: rgba(1, 1, 1, 0.2);
+      color: white;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+
+    #main-greeting,
+    #sub-greeting {
+      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+
+    #main-greeting {
+      font-size: 1.5em;
+      font-weight: 600;
+    }
+
+    #sub-greeting {
+      font-weight: lighter;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="nav">
+    <ul>
+      <li><a href="#" onclick="load('hotline', 'hotline.html')">Suicide Hotline</a></li>
+      <li><a href="#" onclick="load('about', 'about.html')">About </a></li>
+      <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')">Be Okay</a></li>
+    </ul>
+  </div>
+  <div id="container">
+    <div id="greetings">
+      <p id="main-greeting" class="greetings"></p>
+      <p id="sub-greeting" class="greetings"></p>
+    </div>
+  </div>
+  <div id="update-log">Last Updated: 9 March 2020</div>
+  <script>
+    //function to load stuffs
+    function load(id, source) {
+      document.getElementById("container").innerHTML = '<object id =' + id + ' type="text/html" data=' + source + ' ></object>';
+    }
+
+    //do greetings
+    var mainGreet = document.getElementById("main-greeting");
+    var subGreet = document.getElementById("sub-greeting");
+    mainGreet.textContent = "Hello, welcome to Be Okay";
+    subGreet.textContent = "(gently tap your screen to continue.)";
+
+    //function for screen change
+    var greetingsDiv = document.getElementById("greetings");
+
+    var removeText = function removeText(){
+      //current main and sub greeting dissolves.
+      var opacityEl = 1;
+      var timer = setInterval(function () {
+        opacityEl -= 0.02;
+        document.getElementById("main-greeting").style.opacity = opacityEl;
+        document.getElementById("sub-greeting").style.opacity = opacityEl;
+        if (opacityEl <= 0) {
+          clearInterval(timer);
+          greetingsDiv.removeChild(document.getElementById("main-greeting"));
+          greetingsDiv.removeChild(document.getElementById("sub-greeting"));
+        }
+      }, 10);
+    }
+    var changeScreen = function changeScreen(main, sub) {
+      removeText();
+      //create new main and sub Greeting
+      setTimeout(function () {
+        var mainGreet = document.createElement("p");
+        mainGreet.id = "main-greeting";
+        mainGreet.className = "greetings";
+        var subGreet = document.createElement("p");
+        subGreet.id = "sub-greeting";
+        subGreet.className = "greetings";
+        mainGreet.textContent = main;
+        subGreet.textContent = sub;
+        mainGreet.style.opacity = 0;
+        subGreet.style.opacity = 0;
+        //append to div greeting
+        greetingsDiv.appendChild(mainGreet);
+        greetingsDiv.appendChild(subGreet);
+
+        //animate
+        opacityEl = 0;
+        var timer = setInterval(function () {
+          opacityEl += 0.05;
+          mainGreet.style.opacity = opacityEl;
+          subGreet.style.opacity = opacityEl;
+          if (opacityEl >= 1) {
+            clearInterval(timer);
+            mainGreet.style.opacity = 1;
+            subGreet.style.opacity = 1;
+          }
+        }, 10);
+      }, 500);
+
+    }
+    //function to play calm music
+    function playCalm(){
+      var music = new Audio();
+        music.src = "./calm.mp3";
+        music.loop = true;
+        music.volume = 0.6;
+        music.play();
+    }
+
+    var currentScene = 0;
+    //generrate scene change when users tap their screen
+
+/* words*/
+var words = new Array(8);
+for(var i = 0; i < words.length; i++){
+  words[i] = new Array(2);
+}
+words[0] = ["Turn on your speaker for full experience", "again, tap on your screen to continue"];
+words[1] = ["The world can get crazy sometimes", "it is okay to feel overwhelmed."];
+words[2] = ["But hey, try to take a break from time to time", "Relax your shoulder; you've been too tense all day."];
+words[3] = ["I tell you what; ", "everything is going to be okay"];
+words[4] = ["I know, it might not feel that way,", "but you are stronger than you think."]
+words[5] = ["In a few second, you'll enter Be Okay", "it's a safe place to vent"];
+words[6] = ["There, you are free to write what's on your mind", "and watch it disappears into droplets of rain"];
+words[7] = ["No one is going to judge you. You're safe.", "I promise."];
+words[8] = ["Ready to go?", "Take a deep breath, and tap the screen for one last time."];
+
+    var eventHandler = function eventHandler() {
+      //change scene when user tap screen
+      if(currentScene > 8){
+        removeText();
+        setTimeout(function() {
+        document.getElementById("container").innerHTML = '<object id =' + "vent-room" + ' type="text/html" data=' + "vent-room.html" + ' ></object>';
+        }, 500);
+      } else if(currentScene == 1){
+        changeScreen(words[currentScene][0], words[currentScene][1]);
+        playCalm();
+      } else{
+        changeScreen(words[currentScene][0], words[currentScene][1]);
+      }
+    }
+
+    document.addEventListener('click', function(event){
+      if (event.clientY > 47) {
+        eventHandler();
+        currentScene++;
+      }
+    });
+
+    /*if user goes to the vent room without watching the greeting
+     (which means calm song has not played yet), 
+     play it regardless
+    */
+
+    document.getElementById('vent').addEventListener('click', function(){
+      if(currentScene === 0){
+        playCalm();
+      }
+    });
+  </script>
+
+</body>
+
+</html>
