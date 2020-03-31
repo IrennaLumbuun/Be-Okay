@@ -4,15 +4,25 @@
         body {
         color: white;
         font-family:Georgia, 'Times New Roman', Times, serif;
+        margin:unset;
+        }
+        #padding{
+            position: fixed;
+            background-color: #1f242e;
+            background-image: url("./stardust.png");
+            width: 100%;
+            height: 3rem;
+            margin: 0;
+            margin-top: -1rem;
         }
         #text-container{
-        height: fit-content;
-        background-color: rgba(87, 92, 103, 0.3);
-        border-radius: 10px;;
-        color: white;
-        padding-bottom: 2.5%;
-        padding-top:2.5%;
-        margin: 1rem 1rem 0 1rem;
+            height: fit-content;
+            background-color: rgba(87, 92, 103, 0.3);
+            border-radius: 10px;;
+            color: white;
+            padding-bottom: 2.5%;
+            padding-top:2rem;
+            margin: 1rem 1rem 0 1rem;
         }
         p {
             margin-left: 2.5%;
@@ -42,6 +52,8 @@
     </style>
     </head>
     <body>
+        <div id="padding">
+        </div>
         <div id="text-container">
         <h2 align ="center">About</h2>
         <p align="justify">Long, long time ago there was a website called The Thoughts Room. 

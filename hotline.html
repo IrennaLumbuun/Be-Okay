@@ -6,10 +6,19 @@
         }
         body {
             font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            background-image: url('./concrete-wall-2.png');
             background-color: #1f242e;
+            background-image: url("./stardust.png");
             display: grid;
             margin: 0 2.5% 2.5% 2.5%;
+            margin:unset;
+        }
+        #padding{
+            position: fixed;
+            background-color: #1f242e;
+            background-image: url("./stardust.png");
+            width: 100%;
+            height: 3rem;
+            margin: 0;
         }
         p {
             line-height: 2.5em;
@@ -28,6 +37,7 @@
             color:rgb(255, 251, 230);
             display:block;
             margin: 1.5%;
+            margin-top:3rem;
         }
         #line1{
             width: 55%;
@@ -44,6 +54,7 @@
             background-color:rgba(46, 46, 53, 0.5);
             padding: 2.5% 2.5% 2.5% 2.5%;;
             color: white;
+            margin: 0 1rem;
         }
 
         a{
@@ -58,6 +69,7 @@
     </style>
     </head>
     <body>
+    <div id="padding"></div>
     <div id="lines">
         <!--
         <div id="line1">This, too, shall pass.</div> -->
