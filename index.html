@@ -11,17 +11,20 @@
   <style>
     html,
     body {
+      background-color: #1f242e;
+      background-image: url("./stardust.png");
       height: 100%;
       margin: 0;
       font-family:Verdana, Geneva, Tahoma, sans-serif;
     }
 
     ul {
+      font-size:1rem;
+      font-weight: 500;
       list-style-type: none;
-      margin: 0;
+      margin:0;
       padding: 0;
       overflow: hidden;
-      background-color: #DFDFDF;
       width: 100%;
     }
 
@@ -31,25 +34,19 @@
 
     li a {
       display: block;
-      color: black;
+      color: white;
       text-align: center;
-      padding: 14px 16px;
+      padding: 1rem;
       text-decoration: none;
+      transition: border-bottom 0.3s;
     }
 
     li a:hover {
-      background-color: white;
-    }
-    #update-log{
-      background-color: #DFDFDF;
-      font-size: 0.8rem;
-      padding: 10px;
+      border-bottom: 2px solid white;
     }
 
     #container {
-      height: 90%;
-      background-image: url('./stardust.png');
-      background-color: #1f242e;
+      height: -webkit-fill-available;
     }
 
     #vent-room,
@@ -103,7 +100,6 @@
       <p id="sub-greeting" class="greetings"></p>
     </div>
   </div>
-  <div id="update-log">Last Updated: 9 March 2020</div>
   <script>
     //function to load stuffs
     function load(id, source) {
