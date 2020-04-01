@@ -42,7 +42,7 @@
       transition: border-bottom 0.3s;
     }
 
-    li a:hover {
+    li a:hover{
       border-bottom: 2px solid white;
     }
 
@@ -55,7 +55,7 @@
 
     #vent-room,
     #about,
-    #hotline {
+    #hotline, #login {
       height: 100%;
       width: 100%;
     }
@@ -101,9 +101,11 @@
     <ul>
       <li><a href="#" onclick="load('hotline', 'hotline.html')">Suicide Hotline</a></li>
       <li><a href="#" onclick="load('about', 'about.html')">About </a></li>
+      <li><a href="#" onclick="load('login', 'login.html')">Stress Tracker</a></li>
       <li id="vent"><a href=# onclick="load('vent-room', 'vent-room.html')">Be Okay</a></li>
     </ul>
   </div>
+
   <script>
     //function to load stuffs
     function load(id, source) {
