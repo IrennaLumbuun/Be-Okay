@@ -28,13 +28,16 @@
         *,:after,:before{
             box-sizing:border-box
         }
-        .clearfix:after,.clearfix:before{
-            content:'';
-            display:table
-        }
-        .clearfix:after{
-            clear:both;
-            display:block
+        #lines{
+            height:60%;
+            font:bold 1.5em Helvetica, Sans-Serif;
+            letter-spacing: normal;
+            padding: 2.5% 2.5% 0 2.5%;
+            color:rgb(255, 251, 230);
+            display:block;
+            margin: 1.5%;
+            margin-top:3rem;
+            text-align:center;
         }
         a{
             color:inherit;
@@ -56,6 +59,7 @@
             height: -webkit-fill-available;
             position: absolute;
             padding: 2.5rem;
+            padding-top: 1.5rem;
         }
         .login-html .sign-in-htm,
         .login-html .sign-up-htm{
@@ -188,6 +192,11 @@
 <body>
     <div id="padding"></div>
     <div class="login-wrap">
+        <div id="lines">
+            <!--
+            <div id="line1">This, too, shall pass.</div> -->
+            <div id="line2">Welcome back, captain!</div>
+        </div>
         <div class="login-html">
             <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
             <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
@@ -195,11 +204,11 @@
                 <div class="sign-in-htm">
                     <div class="group">
                         <label for="user" class="label">Email</label>
-                        <input id="email" type="email" class="input">
+                        <input id="email-login" type="email" class="input">
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Password</label>
-                        <input id="password" type="password" class="input" data-type="password">
+                        <input id="password-login" type="password" class="input" data-type="password">
                     </div>
                     <div class="group">
                         <input id="check" type="checkbox" class="check" checked>
@@ -215,16 +224,20 @@
                 </div>
                 <div class="sign-up-htm">
                     <div class="group">
+                        <label for="user" class="label">Name</label>
+                        <input id="name-register" type="text" class="input">
+                    </div>
+                    <div class="group">
                         <label for="user" class="label">Email</label>
-                        <input id="user" type="email" class="input">
+                        <input id="email-register" type="email" class="input">
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Password</label>
-                        <input id="pass" type="password" class="input" data-type="password">
+                        <input id="password-register" type="password" class="input" data-type="password">
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Repeat Password</label>
-                        <input id="pass" type="password" class="input" data-type="password">
+                        <input id="password-retype" type="password" class="input" data-type="password">
                     </div>
                     <div class="group">
                     </div>
