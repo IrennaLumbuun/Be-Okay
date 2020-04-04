@@ -120,7 +120,7 @@
     var emailAddress = document.getElementById("retype-email");
 
     auth.sendPasswordResetEmail(emailAddress).then(function() {
-        $('forgotPasswordDiv').hide();
+        $('#forgotPasswordDiv').hide();
         $('.login-html').show();
         alert("email sent")
     }).catch(function(error) {
@@ -138,8 +138,6 @@ auth.onAuthStateChanged(function(user){
         $('.login-html').hide();
         //get data
         var _date_ = new Date();
-        console.log(_date_.getMonth());
-        console.log(_date_.getFullYear())
         getData(_date_.getMonth(), _date_.getFullYear());
     } else{
         console.log("no active user")
@@ -160,7 +158,6 @@ auth.onAuthStateChanged(function(user){
 //Stress questionnaire - helper function
 var _range_ = 5;
 $('.options').on('click', function(){
-    console.log(this);
     var inputVal = $(this).data('value');
     _range_ = inputVal;
 })
@@ -170,8 +167,6 @@ function updateGraph(){
     //code to store stuffs to database
     var level =  _range_;
     var note = document.getElementById("logger-note").value;
-    console.log(level);
-    console.log(note);
     db.collection("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/entry").add({
         day: d.getDate(),
         hour: d.getHours(),
@@ -179,8 +174,7 @@ function updateGraph(){
         stressLevel: level,
         stressNote: note
     }).then(function(docRef) {
-        document.getElementById("logger-note").value = ""; //empty note
-        console.log("Document written with ID: ", docRef.id);
+        document.getElementById("logger-note").value = ""; //emptying note
         getData(d.getMonth(), d.getFullYear());
     })
     .catch(function(error) {
@@ -197,22 +191,80 @@ function updateGraph(){
 function getData(month, year){
     var id= auth.currentUser.uid;
     console.log(id);
-    //var userDoc = Firestore.instance.collection("users").document(id);
     var refCol = db.collection("users/"+id+"/year/" + year + "/month/"+ month +"/entry");
-    console.log(refCol);
 
     refCol.get().then((querySnapshot) => {
-        //if #entries == 1, re-initialize grid
-        console.log(querySnapshot.size)
-        if(querySnapshot.size === 0){
-            var numDays= new Date(year, month + 1, 0).getDate();
-            console.log("number of Days: " + numDays);
-            makeGrid(numDays);
-        }
-        //recalculate average stress level, number of docs. Change background
+        var numDays= new Date(year, month + 1, 0).getDate();
+        makeGrid(numDays, month, year);
+
+        // get today's date -> filter query -> add total -> add to document called color
+        var today = new Date().getDate();
+        var query = refCol.where("day", "==", today);
+
+        query.get().then(function(querySnapshot) {
+            var totalStress = 0;
+            var size = querySnapshot.size;
+            querySnapshot.forEach(function(doc) {
+                console.log("level= " + doc.data().stressLevel);
+                totalStress += doc.data().stressLevel;
+                console.log(`stress level = ${doc.data().stressLevel}`);
+                console.log(`note = ${doc.data().stressNote}`);
+                console.log("totalStress inside for loop = " + totalStress);
+            });
+            console.log("totalStress outside for loop = " + totalStress);
+            console.log("total size: " + size);
+            console.log("---------------------------");
+            //call function to determine color
+            determineColor(totalStress, size);
+            updateGrid();
+        })
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+    });
+
+}
+
+/**
+ * This function determine the background color of our stress tracker
+ * @param {*} totalStress 
+ * @param {*} size 
+ */
+function determineColor(totalStress, size){
+    var color = ['#5b9648','#6cc251', '#a0d620', '#c7d450', '#e39d07', '#e38b07', '#de6e18', '#a13800', '#a10000', '#750000'];
+    var index = Math.floor(totalStress/size) - 1;
+    var d = new Date();
+    var uid = auth.currentUser.uid;
+
+    //add to summary
+    db.doc("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/summary/"+ d.getDate()).set({
+        bg: color[index],
+        total: totalStress,
+        size: size
+    }).then(function(docRef) {
+        console.log("success adding to summary "+ docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding to summary: ", error);
+    });
+}
+
+/**
+ * This method updates each color in the grid
+ */
+function updateGrid(){
+    var d = new Date();
+    var uid = auth.currentUser.uid;
+    //get all docs in summary
+    db.collection("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/summary")
+    .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            console.log(`stress level = ${doc.data().stressLevel}`);
-            console.log(`note = ${doc.data().stressNote}`);
+            console.log(`${doc.id} => ${doc.data()}`);
+            //get respective div
+            var div = document.getElementById("grid-" + doc.id);
+            console.log("retrieved div = " + div);
+            //do color :-)
+            div.style.backgroundColor = doc.data().bg;
         });
     });
 }
@@ -220,8 +272,16 @@ function getData(month, year){
 /**
  * This function creates a new grid
  */
-function makeGrid(numDays){
+function makeGrid(numDays, month, year){
     var output = document.getElementById("tracker-graph");
+    output.innerHTML = '';
+
+    //date
+    var date = document.createElement('p');
+    date.id = "tracker-date";
+    date.textContent = (month+1) + '/' + year;
+    output.appendChild(date);
+
     //container
     var container = document.createElement("div");
     container.className = "days-container";
@@ -234,8 +294,73 @@ function makeGrid(numDays){
         var grid = document.createElement("div");
         grid.className= "days-grid";
         grid.id = "grid-" + i;
+        grid.setAttribute("data-value", i)
+        grid.setAttribute('onclick', 'showEntries('+i+','+ month +','+ year +')');
         container.appendChild(grid);
     }
+}
+
+/*
+$('div.days-grid').on('click', function(){
+    console.log("clicked");
+    var date = document.getElementById(tracker-date).value;
+    var inputVal = $(this).attr('id');
+    var indexSeparator = date.indexOf("/");
+    var month = date.substring(0, indexSeparator);
+    var year = date.substring(indexSeparator+1)
+    console.log("retrieved id " + inputVal);
+
+    showEntries(month, year, inputVal);
+})*/
+
+/**
+ * This function show all entries made on that day when user clicks on the grid
+ */
+function showEntries(day, month, year){
+    console.log("show entries");
+    var id= auth.currentUser.uid;
+    var output = document.getElementById("tracker-entry");
+    var refCol = db.collection("users/"+ id +"/year/" + year + "/month/"+ month +"/entry");
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+    
+    output.innerHTML="";
+    var date =  document.createElement("h1");
+    date.className = "entry-date";
+    date.textContent = (day+1) + " " + monthNames[month] + " " +year;
+    output.appendChild(date);
+    //this return all entries in that month
+    refCol.get().then((querySnapshot) => {
+        var query = refCol.where("day", "==", day);
+        query.get().then(function(querySnapshot) {
+            var number = 1;
+            querySnapshot.forEach(function(doc) {
+                //entry container
+                var container = document.createElement("div");
+                container.id = day + "-entry-container";
+                container.className = "entry-container";
+                output.appendChild(container);
+                //create entry
+                var title =  document.createElement("p");
+                title.className = "entry-number";
+                title.textContent = "#" + number++ + " - " + doc.data().hour + "." + doc.data().minutes;
+                container.appendChild(title);
+
+                var stressLevel = document.createElement("p");
+                stressLevel.className="entry-stressLevel";
+                stressLevel.textContent = "stress: " + doc.data().stressLevel;
+                container.appendChild(stressLevel);
+
+                var stressNote = document.createElement("p");
+                stressNote.className="entry-stressNote";
+                stressNote.textContent = "note: " + doc.data().stressNote;
+                container.appendChild(stressNote);
+            });
+        })
+        .catch(function(error) {
+            console.log("Error displaying entries: ", error);
+        });
+    });
 }
   /*getters*/
   function getUserName(){

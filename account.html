@@ -62,6 +62,10 @@
             display:inline-block;
             margin-right:10px;
         }
+        h3 {
+            font-size: 1.5rem;
+            line-height: 1.8rem;
+        }
         button#stress-logger, #update-graph {
             font-size: 1rem;
             padding: 0.5rem;
@@ -123,17 +127,39 @@
         div#tracker-graph {
             margin: 1rem;
         }
+        #tracker-date {
+            text-align: center;
+        }
         div#days-container {
             display: grid;
-            grid-template-columns: 2rem 2rem 2rem 2rem 2rem 2rem 2rem;
+            grid-template-columns: 10% 10% 10% 10% 10% 10% 10%;
             margin-top: 1rem;
+            justify-content: center;
         }
         .days-grid {
             display: inline-grid;
             background: gray;
-            width: 2rem;
-            height: 2rem;
+            padding-top: 100%;
             border: 1px dashed black;
+            opacity: 0.7;
+        }
+        .days-grid:hover {
+            opacity: 0.5;
+        }
+        div#tracker-entry {
+            height: max-content;
+            padding: 1rem;
+            background-color: rgba(0,0,0,0.5);
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        h1.entry-date {
+            text-align: center;
+        }
+        .entry-container {
+            border-top: 1px solid;
+        }
+        button:hover{
             opacity:0.7;
         }
         #button-container{
@@ -174,7 +200,7 @@
                         </div>
                         <div class="hr"></div>
                         <div class="foot-lnk">
-                            <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+                            <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
                         </div>
                     </div>
                     <div class="sign-up-htm">
@@ -227,7 +253,7 @@
                 <input id="retype-email" type="email" class="input" data-type="password">
             </div>
             <div class="group">
-                <input type="submit" class="button" value="Delete Account" onclick="showForgotPassword()">
+                <input type="submit" class="button" value="Forgot password" onclick="forgotPassword()">
             </div>
         </div>
         <!--Delete Account-->
@@ -245,7 +271,7 @@
         <div id="tracker">
             <!--Stress logger-->
             <h2 id="logger-label"><u>Feeling stressed?</u></h2>
-            <button type="button" id="stress-logger" onclick="showQuestionnaire()">Update Graph</button>
+            <button type="button" id="stress-logger" onclick="showQuestionnaire()">Update Tracker</button>
             <div id="stress-questionnaire">
                 <h3>From the scale of 1 to 10, how stressed are you?</h3>
                 <ul class="answer" id="range">
@@ -261,13 +287,14 @@
                     <li><div class="options option10" tabindex="-1" data-value="10" style="background-color: #750000;">10</div></li>
                 </ul>
                 <h3>Note: </h3>
-                <textarea id="logger-note" placeholder="What triggers the stress?"></textarea>
+                <textarea id="logger-note" placeholder="What triggered the stress?"></textarea>
                 <button type="button" id="update-graph" onclick="updateGraph()">update</button> <!--Todo: fix this!-->
             </div>
 
             <!--Graph-->
             <h2 id="tracker-label">Your stress tracker:</h2>
-            <div id="tracker-graph">placeholder value</div>
+            <div id="tracker-graph"></div>
+            <div id="tracker-entry">Click one of the colored boxes above to view entries</div>
 
             <!--Settings-->
             <div id="button-container">
@@ -330,7 +357,7 @@
             $('.login-html').hide();
             $('#tracker').hide();
             $('#deleteAccountDiv').hide();
-            $('forgotPasswordDiv').show();
+            $('#forgotPasswordDiv').show();
         }
 
         //stress questionnaire
