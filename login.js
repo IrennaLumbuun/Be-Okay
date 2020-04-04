@@ -205,15 +205,10 @@ function getData(month, year){
             var totalStress = 0;
             var size = querySnapshot.size;
             querySnapshot.forEach(function(doc) {
-                console.log("level= " + doc.data().stressLevel);
                 totalStress += doc.data().stressLevel;
-                console.log(`stress level = ${doc.data().stressLevel}`);
-                console.log(`note = ${doc.data().stressNote}`);
-                console.log("totalStress inside for loop = " + totalStress);
+                //console.log(`stress level = ${doc.data().stressLevel}`);
+                //console.log(`note = ${doc.data().stressNote}`);
             });
-            console.log("totalStress outside for loop = " + totalStress);
-            console.log("total size: " + size);
-            console.log("---------------------------");
             //call function to determine color
             determineColor(totalStress, size);
             updateGrid();
@@ -259,7 +254,6 @@ function updateGrid(){
     db.collection("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/summary")
     .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data()}`);
             //get respective div
             var div = document.getElementById("grid-" + doc.id);
             console.log("retrieved div = " + div);
@@ -273,13 +267,15 @@ function updateGrid(){
  * This function creates a new grid
  */
 function makeGrid(numDays, month, year){
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
     var output = document.getElementById("tracker-graph");
     output.innerHTML = '';
 
     //date
     var date = document.createElement('p');
     date.id = "tracker-date";
-    date.textContent = (month+1) + '/' + year;
+    date.textContent = monthNames[month] + ' ' + year;
     output.appendChild(date);
 
     //container
