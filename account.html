@@ -9,7 +9,7 @@
     <!-- TODO: Add SDKs for Firebase products that you want to use
         https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
-    <!--To do: import firestore-->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-firestore.js"></script>
     <link rel="stylesheet" href="./login.css">
     <style> 
         html,body{
@@ -71,20 +71,30 @@
             color: white;
             font-weight: bold;
         }
+        div#stress-questionnaire {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
         .answer{
-            display:flex;
-            opacity:0.9;
-            justify-content: space-between;
-            height:100%;
-            width: 70%;
-            margin-top:1rem;
-            margin-left: 15%;
+            padding-inline-start: 0;
+            display: flex;
+            opacity: 0.9;
+            width: 100%;
+            margin-top: 1rem;
+            /* margin-left: 15%; */
+            place-content: center;
+        }
+        li{ /*add class?*/
+            list-style-type: none;
+            /* width: fit-content; */
+            /* margin: 0; */
+            width: 2.5rem;
         }
         .options{
             border: none;
             padding: 0.5rem;
             text-align: center;
-            width: 20%;
         }
         .options:hover{
             opacity:0.7;
@@ -103,6 +113,28 @@
         }
         #logger-note:focus{
             outline:white;
+        }
+        
+        button#update-graph {
+            margin: 1rem 0;
+            width: 100%;
+            /* margin-left: 50%; */
+        }
+        div#tracker-graph {
+            margin: 1rem;
+        }
+        div#days-container {
+            display: grid;
+            grid-template-columns: 2rem 2rem 2rem 2rem 2rem 2rem 2rem;
+            margin-top: 1rem;
+        }
+        .days-grid {
+            display: inline-grid;
+            background: gray;
+            width: 2rem;
+            height: 2rem;
+            border: 1px dashed black;
+            opacity:0.7;
         }
         #button-container{
             display:flex;
@@ -212,29 +244,30 @@
         <!--tracker-->
         <div id="tracker">
             <!--Stress logger-->
-            <h2 id="logger-label">Feeling stressed? </h2>
+            <h2 id="logger-label"><u>Feeling stressed?</u></h2>
             <button type="button" id="stress-logger" onclick="showQuestionnaire()">Update Graph</button>
             <div id="stress-questionnaire">
                 <h3>From the scale of 1 to 10, how stressed are you?</h3>
-                <div class="answer">
-                    <div class="options option1" tabindex="-1" data-value="1" style="background-color: #5b9648;">1</div>
-                    <div class="options option2" tabindex="-1" data-value="2" style="background-color: #6cc251;">2</div>
-                    <div class="options option3" tabindex="-1" data-value="3" style="background-color: #a0d620;">3</div>
-                    <div class="options option4" tabindex="-1" data-value="4" style="background-color: #c7d450;">4</div>
-                    <div class="options option5" tabindex="-1" data-value="5" style="background-color: #e39d07;">5</div>
-                    <div class="options option6" tabindex="-1" data-value="6" style="background-color: #e38b07;">6</div>
-                    <div class="options option7" tabindex="-1" data-value="7" style="background-color: #de6e18;">7</div>
-                    <div class="options option8" tabindex="-1" data-value="8" style="background-color: #a13800;">8</div>
-                    <div class="options option9" tabindex="-1" data-value="9" style="background-color: #a10000;">9</div>
-                    <div class="options option10" tabindex="-1" data-value="10" style="background-color: #750000;">10</div>
-                </div>
+                <ul class="answer" id="range">
+                    <li><div class="options option1" tabindex="-1" data-value="1" style="background-color: #5b9648;">1</div></li>
+                    <li><div class="options option2" tabindex="-1" data-value="2" style="background-color: #6cc251;">2</div></li>
+                    <li><div class="options option3" tabindex="-1" data-value="3" style="background-color: #a0d620;">3</div></li>
+                    <li><div class="options option4" tabindex="-1" data-value="4" style="background-color: #c7d450;">4</div></li>
+                    <li><div class="options option5" tabindex="-1" data-value="5" style="background-color: #e39d07;">5</div></li>
+                    <li><div class="options option6" tabindex="-1" data-value="6" style="background-color: #e38b07;">6</div></li>
+                    <li><div class="options option7" tabindex="-1" data-value="7" style="background-color: #de6e18;">7</div></li>
+                    <li><div class="options option8" tabindex="-1" data-value="8" style="background-color: #a13800;">8</div></li>
+                    <li><div class="options option9" tabindex="-1" data-value="9" style="background-color: #a10000;">9</div></li>
+                    <li><div class="options option10" tabindex="-1" data-value="10" style="background-color: #750000;">10</div></li>
+                </ul>
                 <h3>Note: </h3>
                 <textarea id="logger-note" placeholder="What triggers the stress?"></textarea>
-                <button type="button" id="update-graph" onclick="updateGraph()">update</button>
+                <button type="button" id="update-graph" onclick="updateGraph()">update</button> <!--Todo: fix this!-->
             </div>
 
             <!--Graph-->
             <h2 id="tracker-label">Your stress tracker:</h2>
+            <div id="tracker-graph">placeholder value</div>
 
             <!--Settings-->
             <div id="button-container">
@@ -302,9 +335,9 @@
 
         //stress questionnaire
         function showQuestionnaire(){
-            $('#stress-questionnaire').show();
+            $('#stress-questionnaire').toggle();
         }
-        //mood tracker
+        //todo: tracker on hover & tracker on click
     </script>
 </body>
 </html>
