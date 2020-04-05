@@ -27,12 +27,12 @@
             background-color: #1f242e;
             background-image: url("./stardust.png");
             width: 100%;
-            height: 3rem;
+            height: 4rem;
             margin: 0;
             z-index: 1;
         }
         #page-container{
-            padding-top:3rem;
+            padding-top:2rem;
             height:100%;
         }
         *,:after,:before{
@@ -128,8 +128,24 @@
         div#tracker-graph {
             margin: 1rem;
         }
+        div#date-label-container {
+            display: flex;
+            justify-content: center;
+        }
         #tracker-date {
             text-align: center;
+            font-size: 1.5rem;
+            margin: 0 1rem;
+            margin-block-end: 0;
+            margin-block-start: 0;
+            align-self: center;
+        }
+        .btn-change-month {
+            width: 1.5rem;
+            height: 1.5rem;
+            background-size: contain;
+            background-color: #FFFBE6;
+            border-radius: 50%;
         }
         div#days-container {
             display: grid;

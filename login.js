@@ -211,7 +211,7 @@ function getData(month, year){
             });
             //call function to determine color
             determineColor(totalStress, size);
-            updateGrid();
+            updateGrid(month, year);
         })
         .catch(function(error) {
             console.log("Error getting documents: ", error);
@@ -220,8 +220,9 @@ function getData(month, year){
 
 }
 
-/**
+/** 
  * This function determine the background color of our stress tracker
+ * and updates it to doc
  * @param {*} totalStress 
  * @param {*} size 
  */
@@ -245,27 +246,32 @@ function determineColor(totalStress, size){
 }
 
 /**
- * This method updates each color in the grid
+ * @param month: month to display
+ * @param year: year to display
+ * This method reads what the div color should be & update the visualization
  */
-function updateGrid(){
-    var d = new Date();
+
+function updateGrid(month, year){
     var uid = auth.currentUser.uid;
     //get all docs in summary
-    db.collection("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/summary")
+    db.collection("users/"+ uid +"/year/" + year +"/month/" + month+"/summary")
     .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             //get respective div
             var div = document.getElementById("grid-" + doc.id);
-            console.log("retrieved div = " + div);
             //do color :-)
             div.style.backgroundColor = doc.data().bg;
         });
     });
 }
 
-/**
+/** 
  * This function creates a new grid
  */
+var displayDate = new Date();
+var displayMonth = displayDate.getMonth();
+var displayYear = displayDate.getFullYear();
+
 function makeGrid(numDays, month, year){
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -273,10 +279,52 @@ function makeGrid(numDays, month, year){
     output.innerHTML = '';
 
     //date
+    var dateLabelContainer = document.createElement("div");
+    dateLabelContainer.id="date-label-container";
+    output.appendChild(dateLabelContainer);
+
+    //back button
+    var backButton= document.createElement("button");
+    backButton.className="btn-change-month";
+    backButton.id = "btn-prev-month";
+    backButton.style.backgroundImage = "url('back.png')";
+    dateLabelContainer.appendChild(backButton);
+    backButton.addEventListener('click', function(){
+        //if not january, go to previous month. Else, go to previous year
+        if(displayMonth > 0){
+            displayMonth -= 1;
+        } else {
+            displayMonth = 11;
+            displayYear -= 1;
+        }
+        var prevNumDays = new Date(displayYear, displayMonth + 1, 0).getDate();
+        makeGrid(prevNumDays, displayMonth, displayYear);
+        updateGrid(displayMonth, displayYear);
+    })
+
+    //date
     var date = document.createElement('p');
     date.id = "tracker-date";
     date.textContent = monthNames[month] + ' ' + year;
-    output.appendChild(date);
+    dateLabelContainer.appendChild(date);
+    //next button
+    var nextButton= document.createElement("button");
+    nextButton.className="btn-change-month";
+    nextButton.id = "btn-prev-month";
+    nextButton.style.backgroundImage = "url('next.png')";
+    dateLabelContainer.appendChild(nextButton);
+    nextButton.addEventListener('click', function(){
+        console.log("next button clicked.")
+        if(displayMonth < 11){
+            displayMonth += 1;
+        } else{
+            displayMonth = 0;
+            displayYear += 1;
+        }
+        var nextNumDays = new Date(displayYear, displayMonth + 1, 0).getDate();
+        makeGrid(nextNumDays, displayMonth, displayYear);
+        updateGrid(displayMonth, displayYear);
+    })
 
     //container
     var container = document.createElement("div");
@@ -299,7 +347,7 @@ function makeGrid(numDays, month, year){
     })
 }
 
-/**
+/** 
  * This function show all entries made on that day when user clicks on the grid
  */
 function showEntries(strDay, month, year){
