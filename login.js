@@ -211,7 +211,7 @@ function getData(month, year){
             });
             //call function to determine color
             determineColor(totalStress, size);
-            updateGrid();
+            updateGrid(month, year);
         })
         .catch(function(error) {
             console.log("Error getting documents: ", error);
@@ -220,8 +220,9 @@ function getData(month, year){
 
 }
 
-/**
+/** 
  * This function determine the background color of our stress tracker
+ * and updates it to doc
  * @param {*} totalStress 
  * @param {*} size 
  */
@@ -245,27 +246,32 @@ function determineColor(totalStress, size){
 }
 
 /**
- * This method updates each color in the grid
+ * @param month: month to display
+ * @param year: year to display
+ * This method reads what the div color should be & update the visualization
  */
-function updateGrid(){
-    var d = new Date();
+
+function updateGrid(month, year){
     var uid = auth.currentUser.uid;
     //get all docs in summary
-    db.collection("users/"+ uid +"/year/" + d.getFullYear()+"/month/" + d.getMonth()+"/summary")
+    db.collection("users/"+ uid +"/year/" + year +"/month/" + month+"/summary")
     .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             //get respective div
             var div = document.getElementById("grid-" + doc.id);
-            console.log("retrieved div = " + div);
             //do color :-)
             div.style.backgroundColor = doc.data().bg;
         });
     });
 }
 
-/**
+/** 
  * This function creates a new grid
  */
+var displayDate = new Date();
+var displayMonth = displayDate.getMonth();
+var displayYear = displayDate.getFullYear();
+
 function makeGrid(numDays, month, year){
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
@@ -273,10 +279,52 @@ function makeGrid(numDays, month, year){
     output.innerHTML = '';
 
     //date
+    var dateLabelContainer = document.createElement("div");
+    dateLabelContainer.id="date-label-container";
+    output.appendChild(dateLabelContainer);
+
+    //back button
+    var backButton= document.createElement("button");
+    backButton.className="btn-change-month";
+    backButton.id = "btn-prev-month";
+    backButton.style.backgroundImage = "url('back.png')";
+    dateLabelContainer.appendChild(backButton);
+    backButton.addEventListener('click', function(){
+        //if not january, go to previous month. Else, go to previous year
+        if(displayMonth > 0){
+            displayMonth -= 1;
+        } else {
+            displayMonth = 11;
+            displayYear -= 1;
+        }
+        var prevNumDays = new Date(displayYear, displayMonth + 1, 0).getDate();
+        makeGrid(prevNumDays, displayMonth, displayYear);
+        updateGrid(displayMonth, displayYear);
+    })
+
+    //date
     var date = document.createElement('p');
     date.id = "tracker-date";
     date.textContent = monthNames[month] + ' ' + year;
-    output.appendChild(date);
+    dateLabelContainer.appendChild(date);
+    //next button
+    var nextButton= document.createElement("button");
+    nextButton.className="btn-change-month";
+    nextButton.id = "btn-prev-month";
+    nextButton.style.backgroundImage = "url('next.png')";
+    dateLabelContainer.appendChild(nextButton);
+    nextButton.addEventListener('click', function(){
+        console.log("next button clicked.")
+        if(displayMonth < 11){
+            displayMonth += 1;
+        } else{
+            displayMonth = 0;
+            displayYear += 1;
+        }
+        var nextNumDays = new Date(displayYear, displayMonth + 1, 0).getDate();
+        makeGrid(nextNumDays, displayMonth, displayYear);
+        updateGrid(displayMonth, displayYear);
+    })
 
     //container
     var container = document.createElement("div");
@@ -286,34 +334,25 @@ function makeGrid(numDays, month, year){
     output.appendChild(container);
 
     //actual grid
-    for(var i = 0 ; i <= numDays; i++){
+    for(var i = 1 ; i <= numDays + 1; i++){
         var grid = document.createElement("div");
         grid.className= "days-grid";
         grid.id = "grid-" + i;
-        grid.setAttribute("data-value", i)
-        grid.setAttribute('onclick', 'showEntries('+i+','+ month +','+ year +')');
+        grid.setAttribute("data-value", i);
         container.appendChild(grid);
     }
+    $('div.days-grid').on('click', function(){
+        var inputVal = $(this).attr('id');
+        showEntries(inputVal.substring(5), month, year);
+    })
 }
 
-/*
-$('div.days-grid').on('click', function(){
-    console.log("clicked");
-    var date = document.getElementById(tracker-date).value;
-    var inputVal = $(this).attr('id');
-    var indexSeparator = date.indexOf("/");
-    var month = date.substring(0, indexSeparator);
-    var year = date.substring(indexSeparator+1)
-    console.log("retrieved id " + inputVal);
-
-    showEntries(month, year, inputVal);
-})*/
-
-/**
+/** 
  * This function show all entries made on that day when user clicks on the grid
  */
-function showEntries(day, month, year){
-    console.log("show entries");
+function showEntries(strDay, month, year){
+    day = Number(strDay);
+    console.log("show entries " + day);
     var id= auth.currentUser.uid;
     var output = document.getElementById("tracker-entry");
     var refCol = db.collection("users/"+ id +"/year/" + year + "/month/"+ month +"/entry");
@@ -323,7 +362,7 @@ function showEntries(day, month, year){
     output.innerHTML="";
     var date =  document.createElement("h1");
     date.className = "entry-date";
-    date.textContent = (day+1) + " " + monthNames[month] + " " +year;
+    date.textContent = (day) + " " + monthNames[month] + " " +year;
     output.appendChild(date);
     //this return all entries in that month
     refCol.get().then((querySnapshot) => {
@@ -344,7 +383,7 @@ function showEntries(day, month, year){
 
                 var stressLevel = document.createElement("p");
                 stressLevel.className="entry-stressLevel";
-                stressLevel.textContent = "stress: " + doc.data().stressLevel;
+                stressLevel.textContent = "stress level: " + doc.data().stressLevel;
                 container.appendChild(stressLevel);
 
                 var stressNote = document.createElement("p");

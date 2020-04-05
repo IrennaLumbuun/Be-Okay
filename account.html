@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width, initial-scale=1.0">
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
 
@@ -14,6 +13,8 @@
     <style> 
         html,body{
             height:100%;
+            background-color: #1f242e;
+            background-image: url("./stardust.png");
         }
         body{
             margin:0;
@@ -26,12 +27,12 @@
             background-color: #1f242e;
             background-image: url("./stardust.png");
             width: 100%;
-            height: 3rem;
+            height: 4rem;
             margin: 0;
             z-index: 1;
         }
         #page-container{
-            padding-top:3rem;
+            padding-top:2rem;
             height:100%;
         }
         *,:after,:before{
@@ -127,8 +128,24 @@
         div#tracker-graph {
             margin: 1rem;
         }
+        div#date-label-container {
+            display: flex;
+            justify-content: center;
+        }
         #tracker-date {
             text-align: center;
+            font-size: 1.5rem;
+            margin: 0 1rem;
+            margin-block-end: 0;
+            margin-block-start: 0;
+            align-self: center;
+        }
+        .btn-change-month {
+            width: 1.5rem;
+            height: 1.5rem;
+            background-size: contain;
+            background-color: #FFFBE6;
+            border-radius: 50%;
         }
         div#days-container {
             display: grid;
@@ -166,10 +183,31 @@
             display:flex;
             justify-content:space-around;
         }
+        #loading {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        display: flex;
+        background-color: #1f242e;
+        background-image: url("./stardust.png");
+        z-index: 99;
+        place-items: center;
+        justify-content: center;
+        }
+
+        #loading-image {
+        z-index: 100;
+        opacity:0.5;
+    }
     </style>
 </head>
 <body>
     <div id="padding"></div>
+    <div id="loading">
+        <img id="loading-image" src="loader.gif" alt="Loading..." />
+      </div>
     <div id="page-container">
         <!--Signup/Sign in-->
         <div class="login-wrap">
@@ -196,11 +234,11 @@
                             <label for="check"><span class="icon"></span> Keep me Signed in</label>
                         </div>-->
                         <div class="group">
-                            <input type="submit" class="button" value="Sign In" id="sign-in" onclick="signIn()">
+                            <input type="submit" class="button" value="Sign In" id="sign-in">
                         </div>
                         <div class="hr"></div>
                         <div class="foot-lnk">
-                            <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                            <a href="#" id="btn-fotgot-password">Forgot Password?</a>
                         </div>
                     </div>
                     <div class="sign-up-htm">
@@ -215,12 +253,12 @@
                         <div class="group">
                             <label for="pass" class="label">Password</label>
                             <input id="password-register" type="password" class="input" data-type="password">
-                            <input type="checkbox" style="margin-top:1rem" onclick="showPassword('password-register')"><label>show password</label>
+                            <input type="checkbox" id="show-password-register" style="margin-top:1rem"><label>show password</label>
                         </div>
                         <div class="group">
                         </div>
                         <div class="group">
-                            <input type="submit" class="button" value="Sign Up" id="sign-up" onclick="signUp()">
+                            <input type="submit" class="button" value="Sign Up" id="sign-up">
                         </div>
                         <div class="hr"></div>
                         <div class="foot-lnk">
@@ -235,15 +273,15 @@
             <div class="group">
                 <label for="old-password" class="label">Old Password</label>
                 <input id="old-pass" type="password" class="input" data-type="password">
-                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('old-pass')"><label>show password</label>
+                <input type="checkbox" style="margin-top:1rem" id="show-old-pass"><label>show password</label>
             </div>
             <div class="group">
                 <label for="pass" class="label">New Password</label>
                 <input id="new-pass" type="password" class="input" data-type="password">
-                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('new-pass')"><label>show password</label>
+                <input type="checkbox" style="margin-top:1rem" id="show-new-pass"><label>show password</label>
             </div>
             <div class="group">
-                <input type="submit" class="button" value="Update" onclick="updatePassword()">
+                <input type="submit" class="button" value="Update" id="btn-update-password">
             </div>
         </div>
         <!--Forgot Password-->
@@ -253,7 +291,7 @@
                 <input id="retype-email" type="email" class="input" data-type="password">
             </div>
             <div class="group">
-                <input type="submit" class="button" value="Forgot password" onclick="forgotPassword()">
+                <input type="submit" class="button" value="Forgot password" id="forgot-password">
             </div>
         </div>
         <!--Delete Account-->
@@ -261,17 +299,17 @@
             <div class="group">
                 <label for="retype-password" class="label">Re-type your password</label>
                 <input id="retype-pass" type="password" class="input" data-type="password">
-                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('retype-pass')"><label>show password</label>
+                <input type="checkbox" id="show-retype-pass" style="margin-top:1rem"><label>show password</label>
             </div>
             <div class="group">
-                <input type="submit" class="button" value="Delete Account" onclick="deleteAccount()">
+                <input type="submit" class="button" value="Delete Account" id="btn-delete-account">
             </div>
         </div>
         <!--tracker-->
         <div id="tracker">
             <!--Stress logger-->
             <h2 id="logger-label"><u>Feeling stressed?</u></h2>
-            <button type="button" id="stress-logger" onclick="showQuestionnaire()">Update Tracker</button>
+            <button type="button" id="stress-logger">Update Tracker</button>
             <div id="stress-questionnaire">
                 <h3>From the scale of 1 to 10, how stressed are you?</h3>
                 <ul class="answer" id="range">
@@ -288,7 +326,7 @@
                 </ul>
                 <h3>Note: </h3>
                 <textarea id="logger-note" placeholder="What triggered the stress?"></textarea>
-                <button type="button" id="update-graph" onclick="updateGraph()">update</button> <!--Todo: fix this!-->
+                <button type="button" id="update-graph">update</button>
             </div>
 
             <!--Graph-->
@@ -298,73 +336,14 @@
 
             <!--Settings-->
             <div id="button-container">
-                <button type="button" id="change-password" onclick="changePassword()">Change Password</button>
-                <button type="button" id="sign-out" onclick="signOut()">Sign Out</button>
-                <button type="button" id="delete-account" onclick="showDeleteAccount()">Delete Account</button>
+                <button type="button" id="change-password">Change Password</button>
+                <button type="button" id="sign-out">Sign Out</button>
+                <button type="button" id="delete-account">Delete Account</button>
             </div>
         </div>
     </div>
     <script src="jquery-3.4.1.min.js"></script>
     <script src="login.js"></script>
-    <script>
-        /*
-        Page flow (handle in login.js):
-        1 - first time: show login page
-        2 - when button is clicked, we verify info
-        3 - when info is verified, login page is hid
-        4 - toggle shows stress tracker
-        */
-
-        //default:
-        $('.login-html').hide();
-        $('#tracker').hide();
-        $('#changePasswordDiv').hide();
-        $('#deleteAccountDiv').hide();
-        $('#forgotPasswordDiv').hide();
-        $('#stress-questionnaire').hide();
-
-        //show password
-        function showPassword(input){
-            var pass = document.getElementById(input);
-            if (pass.type === "password") {
-                pass.type = "text";
-            } else {
-                pass.type = "password";
-            }
-        }
-
-        //change password
-        function changePassword(){
-            $('#changePasswordDiv').show();
-            $('.login-html').hide();
-            $('#tracker').hide();
-            $('#deleteAccountDiv').hide();
-        }
-
-        //delete account
-        function showDeleteAccount(){
-            var confirm = window.confirm("Are you sure you want to delete your account?");
-            if(confirm === true){
-                $('#changePasswordDiv').hide();
-                $('.login-html').hide();
-                $('#tracker').hide();
-                $('#deleteAccountDiv').show();  
-            }
-        }
-        //forgot password
-        function showForgotPassword(){
-            $('#changePasswordDiv').hide();
-            $('.login-html').hide();
-            $('#tracker').hide();
-            $('#deleteAccountDiv').hide();
-            $('#forgotPasswordDiv').show();
-        }
-
-        //stress questionnaire
-        function showQuestionnaire(){
-            $('#stress-questionnaire').toggle();
-        }
-        //todo: tracker on hover & tracker on click
-    </script>
+    <script src="account.js"></script>
 </body>
 </html>
