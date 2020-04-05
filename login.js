@@ -286,34 +286,25 @@ function makeGrid(numDays, month, year){
     output.appendChild(container);
 
     //actual grid
-    for(var i = 0 ; i <= numDays; i++){
+    for(var i = 1 ; i <= numDays + 1; i++){
         var grid = document.createElement("div");
         grid.className= "days-grid";
         grid.id = "grid-" + i;
-        grid.setAttribute("data-value", i)
-        grid.setAttribute('onclick', 'showEntries('+i+','+ month +','+ year +')');
+        grid.setAttribute("data-value", i);
         container.appendChild(grid);
     }
+    $('div.days-grid').on('click', function(){
+        var inputVal = $(this).attr('id');
+        showEntries(inputVal.substring(5), month, year);
+    })
 }
-
-/*
-$('div.days-grid').on('click', function(){
-    console.log("clicked");
-    var date = document.getElementById(tracker-date).value;
-    var inputVal = $(this).attr('id');
-    var indexSeparator = date.indexOf("/");
-    var month = date.substring(0, indexSeparator);
-    var year = date.substring(indexSeparator+1)
-    console.log("retrieved id " + inputVal);
-
-    showEntries(month, year, inputVal);
-})*/
 
 /**
  * This function show all entries made on that day when user clicks on the grid
  */
-function showEntries(day, month, year){
-    console.log("show entries");
+function showEntries(strDay, month, year){
+    day = Number(strDay);
+    console.log("show entries " + day);
     var id= auth.currentUser.uid;
     var output = document.getElementById("tracker-entry");
     var refCol = db.collection("users/"+ id +"/year/" + year + "/month/"+ month +"/entry");
@@ -323,7 +314,7 @@ function showEntries(day, month, year){
     output.innerHTML="";
     var date =  document.createElement("h1");
     date.className = "entry-date";
-    date.textContent = (day+1) + " " + monthNames[month] + " " +year;
+    date.textContent = (day) + " " + monthNames[month] + " " +year;
     output.appendChild(date);
     //this return all entries in that month
     refCol.get().then((querySnapshot) => {
@@ -344,7 +335,7 @@ function showEntries(day, month, year){
 
                 var stressLevel = document.createElement("p");
                 stressLevel.className="entry-stressLevel";
-                stressLevel.textContent = "stress: " + doc.data().stressLevel;
+                stressLevel.textContent = "stress level: " + doc.data().stressLevel;
                 container.appendChild(stressLevel);
 
                 var stressNote = document.createElement("p");
