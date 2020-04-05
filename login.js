@@ -26,9 +26,13 @@
       var name = document.getElementById("name-register");
       var email = document.getElementById("email-register");
       var password = document.getElementById("password-register");
+      var errorContainer = document.getElementById("register-error-message");
+      errorContainer.innerHTML = "";
+      $('#register-error-message').show();
 
       const promise = auth.createUserWithEmailAndPassword(email.value, password.value)
-      promise.catch(e => alert(e.message));
+      promise.catch(e => 
+        errorContainer.textContent = "error: " + e.message);
 
       auth.onAuthStateChanged(function(user){
         var user = auth.currentUser;
@@ -42,7 +46,7 @@
         user.sendEmailVerification().then(function() {
             // Email sent.
         }).catch(function(error) {
-            alert(error);
+            errorContainer.textContent = "can't send email verification " + error;
         });
     })
   }
@@ -50,8 +54,11 @@
     var email = document.getElementById("email-login");
     var password = document.getElementById("password-login");
     const promise = auth.signInWithEmailAndPassword(email.value, password.value)
+    var errorContainer = document.getElementById("login-error-message");
+    errorContainer.innerHTML = "";
+    $('#login-error-message').show();
 
-    promise.catch(e => alert(e.message));
+    promise.catch(e => errorContainer.textContent= "error: " + e.message);
     console.log("Signed in " + email.value);
   }
 

@@ -38,6 +38,7 @@
 
     //default:
     $('.login-html').hide();
+    $('.error-message').hide();
     $('#tracker').hide();
     $('#changePasswordDiv').hide();
     $('#deleteAccountDiv').hide();
