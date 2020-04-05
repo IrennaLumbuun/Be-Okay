@@ -9,11 +9,17 @@
     <!-- TODO: Add SDKs for Firebase products that you want to use
         https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
-    
-    <style>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="./login.css">
+    <style> 
+        html,body{
+            height:100%;
+        }
         body{
             margin:0;
-            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            color:#6a6f8c;
+            background:transparent;
+            font:600 16px/18px 'Open Sans',sans-serif;
         }
         #padding{
             position: fixed;
@@ -26,38 +32,339 @@
         }
         #page-container{
             padding-top:3rem;
+            height:100%;
         }
-        h1#hello {
-            text-align: center;
-            margin-top: 2rem;
-            color: white;
+        *,:after,:before{
+            box-sizing:border-box
         }
-        #name{
+        #lines{
+            height:60%;
+            font:bold 1.5em Helvetica, Sans-Serif;
+            letter-spacing: normal;
+            padding: 0 2rem;
             color:rgb(255, 251, 230);
+            display:block;
+            margin: 1.5%;
+            text-align:center;
         }
-        #tracker-label, #separator{
+        div#tracker, div#changePasswordDiv, div#deleteAccountDiv, div#forgotPasswordDiv{
+            position: absolute;
+            top: 10rem;
+            margin: auto;
+            width: 80%;
+            left:10%;
+        }
+        #tracker-label, #logger-label{
             padding: 2rem 0 1rem 1rem;
             color:white;
+        }
+        #logger-label{
+            display:inline-block;
+            margin-right:10px;
+        }
+        h3 {
+            font-size: 1.5rem;
+            line-height: 1.8rem;
+        }
+        button#stress-logger, #update-graph {
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            border: none;
+            background-color: dimgray;
+            color: white;
+            font-weight: bold;
+        }
+        div#stress-questionnaire {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .answer{
+            padding-inline-start: 0;
+            display: flex;
+            opacity: 0.9;
+            width: 100%;
+            margin-top: 1rem;
+            /* margin-left: 15%; */
+            place-content: center;
+        }
+        li{ /*add class?*/
+            list-style-type: none;
+            /* width: fit-content; */
+            /* margin: 0; */
+            width: 2.5rem;
+        }
+        .options{
+            border: none;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        .options:hover{
+            opacity:0.7;
+        }
+        .options:focus{
+            outline-color: white;
+            opacity:1;
+        }
+        #logger-note{
+            background-color: rgba(0,0,0,0.3);
+            color: white;
+            padding: 0.5rem;
+            width: -webkit-fill-available;
+            height: 5rem;
+            font-size: 0.8rem;
+        }
+        #logger-note:focus{
+            outline:white;
+        }
+        
+        button#update-graph {
+            margin: 1rem 0;
+            width: 100%;
+            /* margin-left: 50%; */
+        }
+        div#tracker-graph {
+            margin: 1rem;
+        }
+        #tracker-date {
+            text-align: center;
+        }
+        div#days-container {
+            display: grid;
+            grid-template-columns: 10% 10% 10% 10% 10% 10% 10%;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .days-grid {
+            display: inline-grid;
+            background: gray;
+            padding-top: 100%;
+            border: 1px dashed black;
+            opacity: 0.7;
+        }
+        .days-grid:hover {
+            opacity: 0.5;
+        }
+        div#tracker-entry {
+            height: max-content;
+            padding: 1rem;
+            background-color: rgba(0,0,0,0.5);
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        h1.entry-date {
+            text-align: center;
+        }
+        .entry-container {
+            border-top: 1px solid;
+        }
+        button:hover{
+            opacity:0.7;
+        }
+        #button-container{
+            display:flex;
+            justify-content:space-around;
         }
     </style>
 </head>
 <body>
     <div id="padding"></div>
     <div id="page-container">
-        <div id="greetings">
-            <h1 id="hello">Hello, <span id="name">(name)</span></h1>
+        <!--Signup/Sign in-->
+        <div class="login-wrap">
+            <div id="lines">
+                <div id="line2">Welcome back, captain!</div>
+            </div>
+            <!--Sign up/Sign in-->
+            <div class="login-html">
+                <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+                <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+                <div class="login-form">
+                    <div class="sign-in-htm">
+                        <div class="group">
+                            <label for="user" class="label">Email</label>
+                            <input id="email-login" type="email" class="input">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Password</label>
+                            <input id="password-login" type="password" class="input" data-type="password">
+                        </div>
+                        <!--To give users the option to keep them in
+                        <div class="group">
+                            <input id="check" type="checkbox" class="check" checked>
+                            <label for="check"><span class="icon"></span> Keep me Signed in</label>
+                        </div>-->
+                        <div class="group">
+                            <input type="submit" class="button" value="Sign In" id="sign-in" onclick="signIn()">
+                        </div>
+                        <div class="hr"></div>
+                        <div class="foot-lnk">
+                            <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                        </div>
+                    </div>
+                    <div class="sign-up-htm">
+                        <div class="group">
+                            <label for="user" class="label">Name</label>
+                            <input id="name-register" type="text" class="input">
+                        </div>
+                        <div class="group">
+                            <label for="user" class="label">Email</label>
+                            <input id="email-register" type="email" class="input">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Password</label>
+                            <input id="password-register" type="password" class="input" data-type="password">
+                            <input type="checkbox" style="margin-top:1rem" onclick="showPassword('password-register')"><label>show password</label>
+                        </div>
+                        <div class="group">
+                        </div>
+                        <div class="group">
+                            <input type="submit" class="button" value="Sign Up" id="sign-up" onclick="signUp()">
+                        </div>
+                        <div class="hr"></div>
+                        <div class="foot-lnk">
+                            <label for="tab-1">Already a Member?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
+        <!--Forgot password-->
+        <div class="login-form" id="changePasswordDiv">
+            <div class="group">
+                <label for="old-password" class="label">Old Password</label>
+                <input id="old-pass" type="password" class="input" data-type="password">
+                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('old-pass')"><label>show password</label>
+            </div>
+            <div class="group">
+                <label for="pass" class="label">New Password</label>
+                <input id="new-pass" type="password" class="input" data-type="password">
+                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('new-pass')"><label>show password</label>
+            </div>
+            <div class="group">
+                <input type="submit" class="button" value="Update" onclick="updatePassword()">
+            </div>
+        </div>
+        <!--Forgot Password-->
+        <div class="login-form" id="forgotPasswordDiv">
+            <div class="group">
+                <label for="retype-email" class="label">Email</label>
+                <input id="retype-email" type="email" class="input" data-type="password">
+            </div>
+            <div class="group">
+                <input type="submit" class="button" value="Forgot password" onclick="forgotPassword()">
+            </div>
+        </div>
+        <!--Delete Account-->
+        <div class="login-form" id="deleteAccountDiv">
+            <div class="group">
+                <label for="retype-password" class="label">Re-type your password</label>
+                <input id="retype-pass" type="password" class="input" data-type="password">
+                <input type="checkbox" style="margin-top:1rem" onclick="showPassword('retype-pass')"><label>show password</label>
+            </div>
+            <div class="group">
+                <input type="submit" class="button" value="Delete Account" onclick="deleteAccount()">
+            </div>
+        </div>
+        <!--tracker-->
         <div id="tracker">
+            <!--Stress logger-->
+            <h2 id="logger-label"><u>Feeling stressed?</u></h2>
+            <button type="button" id="stress-logger" onclick="showQuestionnaire()">Update Tracker</button>
+            <div id="stress-questionnaire">
+                <h3>From the scale of 1 to 10, how stressed are you?</h3>
+                <ul class="answer" id="range">
+                    <li><div class="options option1" tabindex="-1" data-value="1" style="background-color: #5b9648;">1</div></li>
+                    <li><div class="options option2" tabindex="-1" data-value="2" style="background-color: #6cc251;">2</div></li>
+                    <li><div class="options option3" tabindex="-1" data-value="3" style="background-color: #a0d620;">3</div></li>
+                    <li><div class="options option4" tabindex="-1" data-value="4" style="background-color: #c7d450;">4</div></li>
+                    <li><div class="options option5" tabindex="-1" data-value="5" style="background-color: #e39d07;">5</div></li>
+                    <li><div class="options option6" tabindex="-1" data-value="6" style="background-color: #e38b07;">6</div></li>
+                    <li><div class="options option7" tabindex="-1" data-value="7" style="background-color: #de6e18;">7</div></li>
+                    <li><div class="options option8" tabindex="-1" data-value="8" style="background-color: #a13800;">8</div></li>
+                    <li><div class="options option9" tabindex="-1" data-value="9" style="background-color: #a10000;">9</div></li>
+                    <li><div class="options option10" tabindex="-1" data-value="10" style="background-color: #750000;">10</div></li>
+                </ul>
+                <h3>Note: </h3>
+                <textarea id="logger-note" placeholder="What triggered the stress?"></textarea>
+                <button type="button" id="update-graph" onclick="updateGraph()">update</button> <!--Todo: fix this!-->
+            </div>
+
+            <!--Graph-->
             <h2 id="tracker-label">Your stress tracker:</h2>
+            <div id="tracker-graph"></div>
+            <div id="tracker-entry">Click one of the colored boxes above to view entries</div>
+
+            <!--Settings-->
+            <div id="button-container">
+                <button type="button" id="change-password" onclick="changePassword()">Change Password</button>
+                <button type="button" id="sign-out" onclick="signOut()">Sign Out</button>
+                <button type="button" id="delete-account" onclick="showDeleteAccount()">Delete Account</button>
+            </div>
         </div>
-        <button type="button" onclick="signOut()">Sign Out</button>
     </div>
+    <script src="jquery-3.4.1.min.js"></script>
     <script src="login.js"></script>
     <script>
-        //greeting to name
-        //var name = getUserName();
-        //mood tracker
+        /*
+        Page flow (handle in login.js):
+        1 - first time: show login page
+        2 - when button is clicked, we verify info
+        3 - when info is verified, login page is hid
+        4 - toggle shows stress tracker
+        */
+
+        //default:
+        $('.login-html').hide();
+        $('#tracker').hide();
+        $('#changePasswordDiv').hide();
+        $('#deleteAccountDiv').hide();
+        $('#forgotPasswordDiv').hide();
+        $('#stress-questionnaire').hide();
+
+        //show password
+        function showPassword(input){
+            var pass = document.getElementById(input);
+            if (pass.type === "password") {
+                pass.type = "text";
+            } else {
+                pass.type = "password";
+            }
+        }
+
+        //change password
+        function changePassword(){
+            $('#changePasswordDiv').show();
+            $('.login-html').hide();
+            $('#tracker').hide();
+            $('#deleteAccountDiv').hide();
+        }
+
+        //delete account
+        function showDeleteAccount(){
+            var confirm = window.confirm("Are you sure you want to delete your account?");
+            if(confirm === true){
+                $('#changePasswordDiv').hide();
+                $('.login-html').hide();
+                $('#tracker').hide();
+                $('#deleteAccountDiv').show();  
+            }
+        }
+        //forgot password
+        function showForgotPassword(){
+            $('#changePasswordDiv').hide();
+            $('.login-html').hide();
+            $('#tracker').hide();
+            $('#deleteAccountDiv').hide();
+            $('#forgotPasswordDiv').show();
+        }
+
+        //stress questionnaire
+        function showQuestionnaire(){
+            $('#stress-questionnaire').toggle();
+        }
+        //todo: tracker on hover & tracker on click
     </script>
 </body>
 </html>
