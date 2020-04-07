@@ -85,4 +85,6 @@
     //stress questionnaire
     function showQuestionnaire(){
         $('#stress-questionnaire').toggle();
+        document.getElementById("option5").focus();
+
     }

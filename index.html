@@ -170,11 +170,17 @@
     }
     //function to play calm music
     function playCalm(){
-      var music = new Audio();
-        music.src = "./calm.mp3";
-        music.loop = true;
-        music.volume = 0.6;
+      var music = document.createElement("audio");
+      music.id = "calm-audio";
+      music.src = "./calm.mp3";
+      music.loop = true;
+      music.volume = 0.6;
+      
+      var alreadyPlaying = document.getElementById("calm-audio");
+      if(document.getElementById("calm-audio") === null){
         music.play();
+      }
+      document.body.appendChild(music);
     }
 
     var currentScene = 0;

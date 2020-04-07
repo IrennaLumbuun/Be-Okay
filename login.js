@@ -18,6 +18,7 @@
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
 
   var db= firebase.firestore();
   const auth = firebase.auth();
@@ -28,11 +29,12 @@
       var password = document.getElementById("password-register");
       var errorContainer = document.getElementById("register-error-message");
       errorContainer.innerHTML = "";
-      $('#register-error-message').show();
 
       const promise = auth.createUserWithEmailAndPassword(email.value, password.value)
-      promise.catch(e => 
-        errorContainer.textContent = "error: " + e.message);
+      promise.catch(e => {
+        $('#register-error-message').show();
+        errorContainer.textContent = "error: " + e.message;
+      })
 
       auth.onAuthStateChanged(function(user){
         var user = auth.currentUser;
@@ -46,6 +48,7 @@
         user.sendEmailVerification().then(function() {
             // Email sent.
         }).catch(function(error) {
+            $('#register-error-message').show();
             errorContainer.textContent = "can't send email verification " + error;
         });
     })
@@ -56,9 +59,11 @@
     const promise = auth.signInWithEmailAndPassword(email.value, password.value)
     var errorContainer = document.getElementById("login-error-message");
     errorContainer.innerHTML = "";
-    $('#login-error-message').show();
 
-    promise.catch(e => errorContainer.textContent= "error: " + e.message);
+    promise.catch(e => {
+        $('#login-error-message').show();
+        errorContainer.textContent= "error: " + e.message;
+    })
     console.log("Signed in " + email.value);
   }
 
@@ -95,12 +100,25 @@
       });
   }
   
+//helper function for delete account. Copied from firebase documentation site
+  function deleteAtPath(path) {
+    var deleteFn = firebase.functions().httpsCallable('recursiveDelete');
+    deleteFn({ path: path })
+        .then(function(result) {
+            logMessage('Delete success: ' + JSON.stringify(result));
+        })
+        .catch(function(err) {
+            logMessage('Delete failed, see console,');
+            console.warn(err);
+        });
+}
   /**
    * This function is called when users try to delete their account
    * it reauthenticate the user with their password, and then delete them from the user database
    */
   function deleteAccount(){
     var user = auth.currentUser;
+    var uid = user.uid;
     var password = document.getElementById("retype-pass");
     const credential = firebase.auth.EmailAuthProvider.credential(
         user.email, 
@@ -110,7 +128,10 @@
       user.reauthenticateWithCredential(credential).then(function() {
         user.delete().then(function() {
             // User deleted.
+            deleteAtPath("users/" + uid);
+            $('#deleteAccountDiv').hide();
             window.location ="account.html";
+
             alert("succesful delete");
         }).catch(function(error) {
             alert("Error deleting account " + error);
@@ -140,16 +161,20 @@ auth.onAuthStateChanged(function(user){
     if(user){
         //has a user
         var email = user.email;
-        console.log("active:" + email);
+        console.log("active:" + email + " " + user.uid);
         $('#tracker').toggle();
         $('.login-html').hide();
         //get data
         var _date_ = new Date();
-        getData(_date_.getMonth(), _date_.getFullYear());
+        var numDays= new Date(_date_.getFullYear(), _date_.getMonth() + 1, 0).getDate();
+        makeGrid(numDays, _date_.getMonth(), _date_.getFullYear());
+        updateGrid(_date_.getMonth(), _date_.getFullYear());
     } else{
         console.log("no active user")
         $('.login-html').toggle();
         $('#tracker').hide();
+        $('#deleteAccountDiv').hide();
+        $('.error-message').hide();
     }
 })
 
@@ -200,29 +225,24 @@ function getData(month, year){
     console.log(id);
     var refCol = db.collection("users/"+id+"/year/" + year + "/month/"+ month +"/entry");
 
-    refCol.get().then((querySnapshot) => {
-        var numDays= new Date(year, month + 1, 0).getDate();
-        makeGrid(numDays, month, year);
+    // get today's date -> filter query -> add total -> add to document called color
+    var today = new Date().getDate();
+    var query = refCol.where("day", "==", today);
 
-        // get today's date -> filter query -> add total -> add to document called color
-        var today = new Date().getDate();
-        var query = refCol.where("day", "==", today);
-
-        query.get().then(function(querySnapshot) {
-            var totalStress = 0;
-            var size = querySnapshot.size;
-            querySnapshot.forEach(function(doc) {
-                totalStress += doc.data().stressLevel;
-                //console.log(`stress level = ${doc.data().stressLevel}`);
-                //console.log(`note = ${doc.data().stressNote}`);
-            });
-            //call function to determine color
-            determineColor(totalStress, size);
-            updateGrid(month, year);
-        })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
+    query.get().then(function(querySnapshot) {
+        var totalStress = 0;
+        var size = querySnapshot.size;
+        querySnapshot.forEach(function(doc) {
+            totalStress += doc.data().stressLevel;
+            //console.log(`stress level = ${doc.data().stressLevel}`);
+            //console.log(`note = ${doc.data().stressNote}`);
         });
+        //call function to determine color
+        determineColor(totalStress, size);
+        updateGrid(month, year);
+    })
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
     });
 
 }
@@ -341,7 +361,7 @@ function makeGrid(numDays, month, year){
     output.appendChild(container);
 
     //actual grid
-    for(var i = 1 ; i <= numDays + 1; i++){
+    for(var i = 1 ; i <= numDays; i++){
         var grid = document.createElement("div");
         grid.className= "days-grid";
         grid.id = "grid-" + i;
@@ -354,6 +374,10 @@ function makeGrid(numDays, month, year){
     })
 }
 
+//helper function to format hours & minutes
+function format(n){
+    return n > 9 ? "" + n : '0' + n;
+}
 /** 
  * This function show all entries made on that day when user clicks on the grid
  */
@@ -371,37 +395,40 @@ function showEntries(strDay, month, year){
     date.className = "entry-date";
     date.textContent = (day) + " " + monthNames[month] + " " +year;
     output.appendChild(date);
-    //this return all entries in that month
-    refCol.get().then((querySnapshot) => {
-        var query = refCol.where("day", "==", day);
-        query.get().then(function(querySnapshot) {
-            var number = 1;
-            querySnapshot.forEach(function(doc) {
-                //entry container
-                var container = document.createElement("div");
-                container.id = day + "-entry-container";
-                container.className = "entry-container";
-                output.appendChild(container);
-                //create entry
-                var title =  document.createElement("p");
-                title.className = "entry-number";
-                title.textContent = "#" + number++ + " - " + doc.data().hour + "." + doc.data().minutes;
-                container.appendChild(title);
 
-                var stressLevel = document.createElement("p");
-                stressLevel.className="entry-stressLevel";
-                stressLevel.textContent = "stress level: " + doc.data().stressLevel;
-                container.appendChild(stressLevel);
+    var query = refCol.where("day", "==", day);
+    query.get().then(function(querySnapshot) {
+        var number = 1;
+        querySnapshot.forEach(function(doc) {
+            //entry container
+            var container = document.createElement("div");
+            container.id = day + "-entry-container";
+            container.className = "entry-container";
+            output.appendChild(container);
+            //create entry
+            var title =  document.createElement("p");
+            title.className = "entry-number";
+            title.textContent = "#" + number++ + " - " + format(doc.data().hour) + "." + format(doc.data().minutes);
+            container.appendChild(title);
 
-                var stressNote = document.createElement("p");
-                stressNote.className="entry-stressNote";
+            var stressLevel = document.createElement("p");
+            stressLevel.className="entry-stressLevel";
+            stressLevel.textContent = "stress level: " + doc.data().stressLevel;
+            container.appendChild(stressLevel);
+
+            var stressNote = document.createElement("p");
+            stressNote.className="entry-stressNote";
+            if(doc.data().stressNote != ""){
                 stressNote.textContent = "note: " + doc.data().stressNote;
-                container.appendChild(stressNote);
-            });
-        })
-        .catch(function(error) {
-            console.log("Error displaying entries: ", error);
+            }
+            else{
+                stressNote.textContent = "N/A";
+            }
+            container.appendChild(stressNote);
         });
+    })
+    .catch(function(error) {
+        console.log("Error displaying entries: ", error);
     });
 }
   /*getters*/
